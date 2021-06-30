@@ -8,8 +8,8 @@ stages:
 
 variables:
   JOB:
-    value: 
-    description: 
+    value: none
+    description: none
   MYSQL_DATABASE: $MYSQL_DB
   MYSQL_ROOT_PASSWORD: $MYSQL_PASS
   SPARK_IMAGE:
@@ -101,6 +101,7 @@ Setup environment:
         cd ..
       done
     # Insert reference to image pull secret into deployment yaml
+    - cd ../..
     - "sed -i \"s@# <CI image secret is inserted here by pipeline in the helm build job>@imagePullSecrets:\\n      - name: login-cred@g\" helmchart/templates/my-image.yaml"
     # Replace image with gitlab registry image url
     - sed -i "s@metadata_microserivce_demo:latest@${CI_REGISTRY_IMAGE}:latest@g" helmchart/templates/my-image.yaml
