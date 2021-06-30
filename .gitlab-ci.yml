@@ -1,0 +1,120 @@
+default:
+  tags: ["kubernetes"]
+
+stages:
+  - setup
+  - run
+  - cleanup
+
+variables:
+  JOB:
+    value: 
+    description: 
+  MYSQL_DATABASE: $MYSQL_DB
+  MYSQL_ROOT_PASSWORD: $MYSQL_PASS
+  SPARK_IMAGE:
+    value: gitlab.planetrover.io:5050/sequoiadp/spark:latest
+    description: Spark container image to test
+  SPARK_DRIVER_MEMORY:
+    value: 8g
+    description: spark.driver.memory
+  SPARK_EXECUTOR_MEMORY:
+    value: 8g
+    description: spark.executor.memory
+  CACHE_SSD_SIZE:
+    value: 10G
+    description: Cache SSD quota
+  SPARK_WAREHOUSE:
+    value: spark-warehouse/
+    description: Path in Alluxio UFS for the Spark SQL warehouse files
+  SPARK_SQL_PERF_JAR:
+    value: spark-sql-perf_2.12-0.5.1-SNAPSHOT.jar
+    description: Path in Alluxio UFS for the Spark SQL performance jar
+  ALLUXIO_VERSION:
+    value: 2.6.0
+  ALLUXIO_SVC: alluxio-master-0.${KUBE_NAMESPACE}:19998
+  SPARK_DEPENDENCY_DIR:
+    value: spark-files/performance/
+    description: Path in Alluxio UFS for the Spark SQL jar(s)
+  SPARK_DRIVER_POD_NAME: spark-driver
+  # Project variables configured in Settings -> CI/CD -> Variables:
+  # - ALLUXIO_UFS
+  # - AWS_ACCESS_KEY_ID
+  # - AWS_SECRET_ACCESS_KEY
+
+.environment:
+  environment: testing
+
+# Jobs that run spark extend this hidden job
+.spark-run:
+  image: ${SPARK_IMAGE}
+  variables:
+    GIT_STRATEGY: none
+    SPARK_CONF_DIR: /tmp/spark/
+  before_script:
+    # Create the Spark defaults file with the common opts
+    - mkdir -p ${SPARK_CONF_DIR}
+    - cd ${SPARK_CONF_DIR}
+    - |
+      cat << EOF > spark-defaults.conf
+      spark.master                                            k8s://${KUBE_URL}
+      spark.kubernetes.report.interval                        60s
+      spark.driver.memory                                     ${SPARK_DRIVER_MEMORY}
+      spark.executor.memory                                   ${SPARK_EXECUTOR_MEMORY}
+      spark.kubernetes.driver.pod.name                        ${SPARK_DRIVER_POD_NAME}
+      spark.kubernetes.authenticate.driver.serviceAccountName spark
+      spark.kubernetes.container.image                        ${SPARK_IMAGE}
+      spark.kubernetes.namespace                              ${KUBE_NAMESPACE}
+      spark.jars.ivy                                          /tmp/.ivy
+      spark.sql.extensions                                    io.delta.sql.DeltaSparkSessionExtension
+      spark.sql.catalog.spark_catalog                         org.apache.spark.sql.delta.catalog.DeltaCatalog
+      spark.delta.logStore.class                              org.apache.spark.sql.delta.storage.LocalLogStore
+      spark.driver.extraJavaOptions                           -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
+      spark.executor.extraJavaOptions                         -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
+      spark.sql.warehouse.dir                                 alluxio://${ALLUXIO_SVC}/${SPARK_WAREHOUSE}
+      EOF
+    - cat spark-defaults.conf
+
+Setup environment:
+  image: ${CI_REGISTRY}/planetrover/infrastructure/helm:3
+  stage: setup
+  extends:
+    - .environment
+  services:
+  - mysql:latest
+  script:
+    - bash cleanup-env.sh || true
+    - bash setup-env.sh
+    # run metadata microservice
+    - git pull https://gitlab.planetrover.io/sequoiadp/parquet_metadata_microservice_golang_thrift.git
+    - cd parquet_metadata_microservice_golang_thrift/src
+    - thrift -r --gen go metadata.thrift
+    - cd gen-go
+    # Initialize generated go modules
+    - |
+      for i in parquet_metadata metadata
+      do
+        cd $i
+        go mod init $i
+        go mod tidy
+        sed -i "s/github.com\/apache\/thrift\/lib\/go\/thrift v0.0.0-20210120171102-e27e82c46ba4/github.com\/apache\/thrift v0.13.0/g" go.mod
+        cd ..
+      done
+    # Insert reference to image pull secret into deployment yaml
+    - "sed -i \"s@# <CI image secret is inserted here by pipeline in the helm build job>@imagePullSecrets:\\n      - name: login-cred@g\" helmchart/templates/my-image.yaml"
+    # Replace image with gitlab registry image url
+    - sed -i "s@metadata_microserivce_demo:latest@${CI_REGISTRY_IMAGE}:latest@g" helmchart/templates/my-image.yaml
+    # Generate imae pull secret using gitlab registry credentials
+    - kubectl create secret docker-registry login-cred --namespace=${KUBE_NAMESPACE} --docker-server=${CI_REGISTRY} --docker-username=${CI_REGISTRY_USER} --docker-password=${CI_REGISTRY_PASSWORD}
+    - helm upgrade --install metadata-microservice ./helmchart
+    
+    # run metastore microservice
+
+Cleanup environment:
+  image: ${CI_REGISTRY}/planetrover/infrastructure/helm:3
+  stage: cleanup
+  extends:
+    - .environment
+  when: manual
+  script:
+    - bash cleanup-env.sh
