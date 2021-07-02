@@ -55,11 +55,18 @@ do
 done
 # Insert reference to image pull secret into deployment yaml
 cd ../..
-"sed -i \"s@# <CI image secret is inserted here by pipeline in the helm build job>@imagePullSecrets:\\n      - name: login-cred@g\" helmchart/templates/my-image.yaml"
+sed -i "s@# <CI image secret is inserted here by pipeline in the helm build job>@imagePullSecrets:\\n      - name: login-cred@g" helmchart/templates/my-image.yaml
 # Replace image with gitlab registry image url
-sed -i "s@metadata_microserivce_demo:latest@${CI_REGISTRY_IMAGE}:latest@g" helmchart/templates/my-image.yaml
+sed -i "s@metadata_microserivce_demo:latest@gitlab.planetrover.io:5050/sequoiadp/parquet_metadata_microservice_golang_thrift:latest@g" helmchart/templates/my-image.yaml
 # Generate imae pull secret using gitlab registry credentials
 kubectl create secret docker-registry login-cred --namespace=${KUBE_NAMESPACE} --docker-server=${CI_REGISTRY} --docker-username=${CI_REGISTRY_USER} --docker-password=${CI_REGISTRY_PASSWORD}
 helm upgrade --install metadata-microservice ./helmchart
     
 # run metastore microservice
+git pull ssh://git@gitlab.planetrover.io:8022/sequoiadp/hive-metastore-helmchart.git
+cd hive-metastore-helmchart
+# replace image
+sed -i "s@{{ .Values.image.registry}}/{{ .Values.image.repository }}:{{ .Values.image.tag }}@gitlab.planetrover.io:5050/sequoiadp/hive-metastore-helmchart:latest@g" templates/statefulset.yaml
+# add secret
+sed -i "s@{{- end }}@{{- end }}\\n      imagePullSecrets:\\n      - name: login-cred@g" templates/statefulset.yaml
+helm upgrade --install metastore-microservice .
