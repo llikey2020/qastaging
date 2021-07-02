@@ -80,8 +80,6 @@ Setup environment:
   stage: setup
   extends:
     - .environment
-  services:
-  - mysql:latest
   script:
     - bash cleanup-env.sh || true
     - bash setup-env.sh
