@@ -76,7 +76,7 @@ variables:
     - cat spark-defaults.conf
 
 Setup environment:
-  image: ${CI_REGISTRY}/planetrover/infrastructure/helm:3
+  image: ${CI_REGISTRY}/planetrover/infrastructure/staging
   stage: setup
   extends:
     - .environment
@@ -85,7 +85,7 @@ Setup environment:
     - bash setup-env.sh
 
 Cleanup environment:
-  image: ${CI_REGISTRY}/planetrover/infrastructure/helm:3
+  image: ${CI_REGISTRY}/planetrover/infrastructure/staging
   stage: cleanup
   extends:
     - .environment
