@@ -37,7 +37,7 @@ tieredstore:
 EOF
 
 helm repo add alluxio-charts https://alluxio-charts.storage.googleapis.com/openSource/2.6.0
-helm install alluxio -f alluxio.yaml alluxio-charts/alluxio --wait
+#helm install alluxio -f alluxio.yaml alluxio-charts/alluxio --wait
 
 # The metadata microservice must be built before installing
 git pull https://gitlab.planetrover.io/sequoiadp/parquet_metadata_microservice_golang_thrift.git
