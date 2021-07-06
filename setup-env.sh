@@ -40,7 +40,7 @@ helm repo add alluxio-charts https://alluxio-charts.storage.googleapis.com/openS
 #helm install alluxio -f alluxio.yaml alluxio-charts/alluxio --wait
 
 # The metadata microservice must be built before installing
-git pull ssh://git@gitlab.planetrover.io:8022/sequoiadp/parquet_metadata_microservice_golang_thrift.git
+git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.planetrover.io/sequoiadp/parquet_metadata_microservice_golang_thrift.git
 cd parquet_metadata_microservice_golang_thrift/src
 thrift -r --gen go metadata.thrift
  cd gen-go
@@ -63,7 +63,7 @@ kubectl create secret docker-registry login-cred --namespace=${KUBE_NAMESPACE} -
 helm upgrade --install metadata-microservice ./helmchart
     
 # run metastore microservice
-git pull ssh://git@gitlab.planetrover.io:8022/sequoiadp/hive-metastore-helmchart.git
+git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.planetrover.io/sequoiadp/hive-metastore-helmchart.git
 cd hive-metastore-helmchart
 # replace image
 sed -i "s@{{ .Values.image.registry}}/{{ .Values.image.repository }}:{{ .Values.image.tag }}@gitlab.planetrover.io:5050/sequoiadp/hive-metastore-helmchart:latest@g" templates/statefulset.yaml
