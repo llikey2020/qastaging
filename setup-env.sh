@@ -40,7 +40,7 @@ helm repo add alluxio-charts https://alluxio-charts.storage.googleapis.com/openS
 #helm install alluxio -f alluxio.yaml alluxio-charts/alluxio --wait
 
 # The metadata microservice must be built before installing
-git pull https://gitlab.planetrover.io/sequoiadp/parquet_metadata_microservice_golang_thrift.git
+git pull ssh://git@gitlab.planetrover.io:8022/sequoiadp/parquet_metadata_microservice_golang_thrift.git
 cd parquet_metadata_microservice_golang_thrift/src
 thrift -r --gen go metadata.thrift
  cd gen-go
