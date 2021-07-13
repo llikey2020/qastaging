@@ -7,5 +7,6 @@ kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fs rm -RU /${SPARK_DE
 helm uninstall alluxio alluxio-charts/alluxio || true
 kubectl delete pod ${SPARK_DRIVER_POD_NAME} --wait=true --ignore-not-found=true
 kubectl delete service/${MYSQL_SVC_NAME} deployment/${MYSQL_SVC_NAME}
+helm uninstall zeppelin-service || true
 helm uninstall hive-metastore-service || true
 kubectl delete secret login-cred
