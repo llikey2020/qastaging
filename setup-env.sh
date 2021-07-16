@@ -89,7 +89,6 @@ helm upgrade --install \
   --set image.tag=latest \
   hive-metastore-service hive-metastore
 
-
 wget --header="JOB-TOKEN: ${CI_JOB_TOKEN}" ${CI_API_V4_URL}/projects/34/packages/generic/metadata-helm-chart/0.1.0/helmchart-0.1.0.tgz
 tar xf helmchart-0.1.0.tgz
 
@@ -97,3 +96,13 @@ helm upgrade --install \
   --set image.registry=${CI_REGISTRY}/sequoiadp/parquet_metadata_microservice_golang_thrift:latest \
   --set imagePullSecrets="[{\"name\": \"${DOCKER_LOGIN_SECRET}\"}]" \
   metadata-service helmchart
+
+wget --header="JOB-TOKEN: ${CI_JOB_TOKEN}" ${CI_API_V4_URL}/projects/41/packages/generic/zeppelin-helm-chart/0.1.0/zeppelin-0.1.0.tgz
+tar xf zeppelin-0.1.0.tgz
+
+helm upgrade --install \
+  --set imagePullSecrets="[{\"name\": \"${DOCKER_LOGIN_SECRET}\"}]" \
+  --set image.repository=${CI_REGISTRY}/sequoiadp/zeppelin:latest \
+  --set image.pullPolicy=IfNotPresent \
+  --set spark.repository=${CI_REGISTRY}/sequoiadp/spark:latest \
+  zeppelin-service zeppelin

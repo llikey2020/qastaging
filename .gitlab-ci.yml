@@ -85,6 +85,11 @@ Setup environment:
   script:
     - bash cleanup-env.sh || true
     - bash setup-env.sh
+    # wait for all services to start running
+    - |
+      while [ $(kubectl get pods --field-selector=status.phase!=Succeeded,status.phase!=Running --no-headers | wc -l) != 0 ]; do
+       sleep 1
+      done
 
 Cleanup environment:
   image: ${CI_REGISTRY}/planetrover/infrastructure/staging
