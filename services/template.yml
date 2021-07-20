@@ -1,0 +1,27 @@
+default:
+  tags: ["kubernetes"]
+
+stages:
+  - setup
+  - cleanup
+
+.environment:
+  environment: testing
+
+setup:
+  image: ${CI_REGISTRY}/planetrover/infrastructure/staging
+  stage: setup
+  extends:
+    - .environment
+  script:
+    - bash services/${PROJECT_NAME}/cleanup-env.sh || true
+    - bash services/${PROJECT_NAME}/setup-env.sh
+
+cleanup:
+  image: ${CI_REGISTRY}/planetrover/infrastructure/staging
+  stage: cleanup
+  extends:
+    - .environment
+  when: manual
+  script:
+    - bash services/${PROJECT_NAME}/cleanup-env.sh
