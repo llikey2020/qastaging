@@ -1,12 +1,20 @@
 default:
   tags: ["kubernetes"]
 
+workflow:
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_COMMIT_BRANCH
+
 stages:
   - setup
   - run
   - cleanup
 
 variables:
+  DEPLOY_PROJECT:
+    value: all
+    description: all, alluxio, hive, metadata, zeppelin
   JOB:
     value: none
     description: none
@@ -80,6 +88,8 @@ variables:
 Setup environment:
   image: ${CI_REGISTRY}/planetrover/infrastructure/staging
   stage: setup
+  rules:
+    - if: '$DEPLOY_PROJECT == "all"'
   extends:
     - .environment
   script:
@@ -90,6 +100,34 @@ Setup environment:
       while [ $(kubectl get pods --field-selector=status.phase!=Succeeded,status.phase!=Running --no-headers | wc -l) != 0 ]; do
        sleep 1
       done
+
+Setup alluxio:
+  stage: setup
+  rules:
+    - if: '$DEPLOY_PROJECT == "alluxio"'
+  trigger:
+    include: services/alluxio/pipeline.yml
+
+Setup metadata:
+  stage: setup
+  rules:
+    - if: '$DEPLOY_PROJECT == "metadata"'
+  trigger:
+    include: services/metadata/pipeline.yml
+
+Setup hive:
+  stage: setup
+  rules:
+    - if: '$DEPLOY_PROJECT == "hive"'
+  trigger:
+    include: services/hive/pipeline.yml
+
+Setup zeppelin:
+  stage: setup
+  rules:
+    - if: '$DEPLOY_PROJECT == "zeppelin"'
+  trigger:
+    include: services/zeppelin/pipeline.yml
 
 Cleanup environment:
   image: ${CI_REGISTRY}/planetrover/infrastructure/staging
