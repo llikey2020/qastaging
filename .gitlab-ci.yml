@@ -14,7 +14,7 @@ stages:
 variables:
   DEPLOY_PROJECT:
     value: all
-    description: all, alluxio, metadata, metastore, zeppelin
+    description: all, alluxio, hive, metadata, zeppelin
   JOB:
     value: none
     description: none
