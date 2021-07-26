@@ -14,7 +14,7 @@ stages:
 variables:
   DEPLOY_PROJECT:
     value: all
-    description: all, alluxio, hive, metadata, zeppelin
+    description: all, alluxio, history, hive, metadata, zeppelin
   JOB:
     value: none
     description: none
@@ -42,6 +42,9 @@ variables:
   SPARK_DEPENDENCY_DIR:
     value: spark-files/
     description: Path in Alluxio UFS for the Spark SQL jar(s)
+  SPARK_HISTORY_SERVER_ENABLED:
+    value: "false"
+    description: (true/false) Enable/disable spark history server
   SPARK_DRIVER_POD_NAME: spark-driver
   MYSQL_VERSION: "5.7"
   MYSQL_SVC_NAME: mysql
@@ -114,6 +117,13 @@ Setup metadata:
     - if: '$DEPLOY_PROJECT == "metadata"'
   trigger:
     include: services/metadata/pipeline.yml
+
+Setup history:
+  stage: setup
+  rules:
+    - if: '$DEPLOY_PROJECT == "history"'
+  trigger:
+    include: services/history/pipeline.yml
 
 Setup hive:
   stage: setup
