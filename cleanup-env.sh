@@ -11,3 +11,5 @@ helm uninstall zeppelin-service || true
 helm uninstall hive-metastore-service || true
 helm uninstall metadata-service || true
 kubectl delete secret login-cred
+
+helm uninstall history-server || true
