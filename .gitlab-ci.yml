@@ -7,7 +7,12 @@ workflow:
     - if: $CI_COMMIT_BRANCH
 
 stages:
-  - setup
+  - setup-mysql
+  - setup-alluxio
+  - setup-history
+  - setup-hive
+  - setup-metadata
+  - setup-zeppelin
   - run
   - cleanup
 
@@ -88,9 +93,9 @@ variables:
       EOF
     - cat spark-defaults.conf
 
-Setup environment:
+Setup mysql:
   image: ${CI_REGISTRY}/planetrover/infrastructure/staging
-  stage: setup
+  stage: setup-mysql
   rules:
     - if: '$DEPLOY_PROJECT == "all"'
   extends:
@@ -98,46 +103,46 @@ Setup environment:
   script:
     - bash cleanup-env.sh || true
     - bash setup-env.sh
-    # wait for all services to start running
-    - |
-      while [ $(kubectl get pods --field-selector=status.phase!=Succeeded,status.phase!=Running --no-headers | wc -l) != 0 ]; do
-       sleep 1
-      done
-
+    
 Setup alluxio:
-  stage: setup
+  stage: setup-alluxio
   rules:
-    - if: '$DEPLOY_PROJECT == "alluxio"'
+    - if: '$DEPLOY_PROJECT == "alluxio" || $DEPLOY_PROJECT == "all"'
   trigger:
     include: services/alluxio/pipeline.yml
-
-Setup metadata:
-  stage: setup
-  rules:
-    - if: '$DEPLOY_PROJECT == "metadata"'
-  trigger:
-    include: services/metadata/pipeline.yml
+    strategy: depend
 
 Setup history:
-  stage: setup
+  stage: setup-history
   rules:
-    - if: '$DEPLOY_PROJECT == "history"'
+    - if: '$DEPLOY_PROJECT == "history" || $DEPLOY_PROJECT == "all"'
   trigger:
     include: services/history/pipeline.yml
+    strategy: depend
 
 Setup hive:
-  stage: setup
+  stage: setup-hive
   rules:
-    - if: '$DEPLOY_PROJECT == "hive"'
+    - if: '$DEPLOY_PROJECT == "hive" || $DEPLOY_PROJECT == "all"'
   trigger:
     include: services/hive/pipeline.yml
+    strategy: depend
+
+Setup metadata:
+  stage: setup-metadata
+  rules:
+    - if: '$DEPLOY_PROJECT == "metadata" || $DEPLOY_PROJECT == "all"'
+  trigger:
+    include: services/metadata/pipeline.yml
+    strategy: depend
 
 Setup zeppelin:
-  stage: setup
+  stage: setup-zeppelin
   rules:
-    - if: '$DEPLOY_PROJECT == "zeppelin"'
+    - if: '$DEPLOY_PROJECT == "zeppelin" || $DEPLOY_PROJECT == "all"'
   trigger:
     include: services/zeppelin/pipeline.yml
+    strategy: depend
 
 Cleanup environment:
   image: ${CI_REGISTRY}/planetrover/infrastructure/staging
