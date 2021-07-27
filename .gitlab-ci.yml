@@ -20,6 +20,9 @@ variables:
   DEPLOY_PROJECT:
     value: all
     description: all, alluxio, history, hive, metadata, zeppelin
+  ONLY_CLEANUP: 
+    value: "false"
+    description: Skip cleanup when false, only run cleanup when true
   JOB:
     value: none
     description: none
@@ -47,9 +50,6 @@ variables:
   SPARK_DEPENDENCY_DIR:
     value: spark-files/
     description: Path in Alluxio UFS for the Spark SQL jar(s)
-  SPARK_HISTORY_SERVER_ENABLED:
-    value: "false"
-    description: (true/false) Enable/disable spark history server
   SPARK_DRIVER_POD_NAME: spark-driver
   MYSQL_VERSION: "5.7"
   MYSQL_SVC_NAME: mysql
@@ -97,7 +97,7 @@ Setup mysql:
   image: ${CI_REGISTRY}/planetrover/infrastructure/staging
   stage: setup-mysql
   rules:
-    - if: '$DEPLOY_PROJECT == "all"'
+    - if: '$DEPLOY_PROJECT == "all" && $ONLY_CLEANUP == "false"'
   extends:
     - .environment
   script:
@@ -107,7 +107,7 @@ Setup mysql:
 Setup alluxio:
   stage: setup-alluxio
   rules:
-    - if: '$DEPLOY_PROJECT == "alluxio" || $DEPLOY_PROJECT == "all"'
+    - if: '($DEPLOY_PROJECT == "alluxio" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
   trigger:
     include: services/alluxio/pipeline.yml
     strategy: depend
@@ -115,7 +115,7 @@ Setup alluxio:
 Setup history:
   stage: setup-history
   rules:
-    - if: '$DEPLOY_PROJECT == "history" || $DEPLOY_PROJECT == "all"'
+    - if: '($DEPLOY_PROJECT == "history" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
   trigger:
     include: services/history/pipeline.yml
     strategy: depend
@@ -123,7 +123,7 @@ Setup history:
 Setup hive:
   stage: setup-hive
   rules:
-    - if: '$DEPLOY_PROJECT == "hive" || $DEPLOY_PROJECT == "all"'
+    - if: '($DEPLOY_PROJECT == "hive" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
   trigger:
     include: services/hive/pipeline.yml
     strategy: depend
@@ -131,7 +131,7 @@ Setup hive:
 Setup metadata:
   stage: setup-metadata
   rules:
-    - if: '$DEPLOY_PROJECT == "metadata" || $DEPLOY_PROJECT == "all"'
+    - if: '($DEPLOY_PROJECT == "metadata" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
   trigger:
     include: services/metadata/pipeline.yml
     strategy: depend
@@ -139,16 +139,17 @@ Setup metadata:
 Setup zeppelin:
   stage: setup-zeppelin
   rules:
-    - if: '$DEPLOY_PROJECT == "zeppelin" || $DEPLOY_PROJECT == "all"'
+    - if: '($DEPLOY_PROJECT == "zeppelin" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
   trigger:
     include: services/zeppelin/pipeline.yml
     strategy: depend
 
 Cleanup environment:
   image: ${CI_REGISTRY}/planetrover/infrastructure/staging
+  rules:
+    - if: '$ONLY_CLEANUP == "true"'
   stage: cleanup
   extends:
     - .environment
-  when: manual
   script:
     - bash cleanup-env.sh
