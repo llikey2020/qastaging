@@ -9,7 +9,7 @@ wget --header="JOB-TOKEN: ${CI_JOB_TOKEN}" ${CI_API_V4_URL}/projects/34/packages
 tar xf helmchart-0.1.0.tgz
 
 helm upgrade --install \
-  --set image.registry=${CI_REGISTRY}/sequoiadp/parquet_metadata_microservice_golang_thrift:latest \
+  --set image.registry=${CI_REGISTRY}/sequoiadp/metadata_service:latest \
   --set imagePullSecrets="[{\"name\": \"${METADATA_DOCKER_LOGIN_SECRET}\"}]" \
   metadata-service helmchart
 
