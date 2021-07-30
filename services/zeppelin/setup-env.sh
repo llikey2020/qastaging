@@ -11,7 +11,7 @@ tar xf zeppelin-0.1.0.tgz
 helm upgrade --install \
   --set imagePullSecrets="[{\"name\": \"${ZEPPELIN_DOCKER_LOGIN_SECRET}\"}]" \
   --set image.repository=${CI_REGISTRY}/sequoiadp/zeppelin:latest \
-  --set image.pullPolicy=IfNotPresent \
+  --set image.pullPolicy=Always \
   --set spark.repository=${CI_REGISTRY}/sequoiadp/spark:latest \
   zeppelin-service zeppelin
 
