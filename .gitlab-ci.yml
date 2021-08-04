@@ -13,6 +13,7 @@ stages:
   - setup-hive
   - setup-metadata
   - setup-zeppelin
+  - setup-frontend
   - run
   - cleanup
 
@@ -46,7 +47,7 @@ variables:
     description: Path in Alluxio UFS for the Spark SQL performance jar
   ALLUXIO_VERSION:
     value: 2.6.0
-  ALLUXIO_SVC: alluxio-master-0.${KUBE_NAMESPACE}:19998
+  ALLUXIO_SVC: alluxio-master-0:19998
   SPARK_DEPENDENCY_DIR:
     value: spark-files/
     description: Path in Alluxio UFS for the Spark SQL jar(s)
@@ -142,6 +143,14 @@ Setup zeppelin:
     - if: '($DEPLOY_PROJECT == "zeppelin" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
   trigger:
     include: services/zeppelin/pipeline.yml
+    strategy: depend
+
+Setup frontend:
+  stage: setup-frontend
+  rules:
+    - if: '($DEPLOY_PROJECT == "frontend" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false" && $JOB == "none"'
+  trigger:
+    include: services/frontend/pipeline.yml
     strategy: depend
 
 Cleanup environment:
