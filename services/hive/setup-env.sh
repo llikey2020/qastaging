@@ -13,6 +13,7 @@ helm upgrade --install \
   --set image.registry=${CI_REGISTRY} \
   --set image.repository=sequoiadp/hive-metastore-helmchart \
   --set image.tag=latest \
+  --set image.pullPolicy=Always \
   hive-metastore-service hive-metastore
 
 while [ $(kubectl get pod -l app.kubernetes.io/name=hive-metastore -o jsonpath="{.items[0].status.phase}") != 'Running'  ]; do

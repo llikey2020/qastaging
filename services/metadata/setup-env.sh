@@ -11,6 +11,7 @@ tar xf helmchart-0.1.0.tgz
 helm upgrade --install \
   --set image.registry=${CI_REGISTRY}/sequoiadp/metadata_service:latest \
   --set imagePullSecrets="[{\"name\": \"${METADATA_DOCKER_LOGIN_SECRET}\"}]" \
+  --set image.pullPolicy=Always \
   metadata-service helmchart
 
 while [ $(kubectl get pod -l app=metadata-microservice -o jsonpath="{.items[0].status.phase}") != 'Running'  ]; do
