@@ -102,8 +102,8 @@ Setup mysql:
   extends:
     - .environment
   script:
-    - bash cleanup-env.sh || true
-    - bash setup-env.sh
+    - bash cleanup-mysql.sh || true
+    - bash setup-mysql.sh
     
 Setup alluxio:
   stage: setup-alluxio
