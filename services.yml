@@ -34,7 +34,7 @@ include:
     # CHART_DIR: 
     # ID:
   script:
-    - !reference: [".package-pull", "script"]
+    - !reference [".package-pull", "script"]
     - tar xf ${FILE_NAME}
   artifacts:
     paths:
