@@ -1,0 +1,29 @@
+Zeppelin helm pull:
+  extends:
+    - .helm-downloader
+  variables:
+    PACKAGE_NAME: zeppelin-helm-chart
+    FILE_NAME: zeppelin-0.1.0.tgz
+    PACKAGE_VERSION: "0.1.0"
+    CHART_DIR: zeppelin
+    ID: 41
+
+Zeppelin helm install:
+  extends:
+    - .helm-installer
+  needs:
+    - Zeppelin helm pull
+  variables:
+    SERVICE_NAME: zeppelin-service
+    CHART_DIR: zeppelin
+  before_script:
+    - |
+      cat << EOF > ${VALUES_FILE}
+        imagePullSecrets:
+          - name: ${PULL_SECRET}
+        image:
+          repository: ${REGISTRY}/sequoiadp/zeppelin:${ZEPPELIN_IMAGE_TAG}
+          pullPolicy: Always
+        spark:
+          repository: ${REGISTRY}/${SPARK_PROJECT}:${SPARK_IMAGE_TAG}
+      EOF

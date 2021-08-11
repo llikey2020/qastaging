@@ -1,0 +1,34 @@
+Frontend helm pull:
+  extends:
+    - .helm-downloader
+  variables:
+    PACKAGE_NAME: sdp-frontend-helm-chart
+    FILE_NAME: sdp-frontend-0.0.2.tgz
+    PACKAGE_VERSION: "0.0.2"
+    CHART_DIR: sdp-frontend
+    ID: 46
+
+Frontend helm install:
+  extends:
+    - .helm-installer
+  needs:
+    - Frontend helm pull
+  variables:
+    SERVICE_NAME: sdp-frontend-service
+    CHART_DIR: sdp-frontend
+  before_script:
+    - |
+      cat << EOF > ${VALUES_FILE}
+        backendServices:
+          - name: METASTORE
+            value: hive-metastore-service
+          - name: SPARK_HISTORY_SERVER
+            value: history-server
+          - name: ZEPPELIN
+            value: zeppelin-server
+        image:
+          registry: ${REGISTRY}
+          dockerTag: ${FRONTEND_IMAGE_TAG}
+        imagePullSecrets:
+          - name: ${PULL_SECRET}
+      EOF

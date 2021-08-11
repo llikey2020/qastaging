@@ -1,0 +1,26 @@
+Metadata helm pull:
+  extends:
+    - .helm-downloader
+  variables:
+    PACKAGE_NAME: metadata-helm-chart
+    FILE_NAME: helmchart-0.1.0.tgz
+    PACKAGE_VERSION: "0.1.0"
+    CHART_DIR: helmchart
+    ID: 34
+
+Metadata helm install:
+  extends:
+    - .helm-installer
+  needs:
+    - Metadata helm pull
+  variables:
+    SERVICE_NAME: metadata-service
+    CHART_DIR: helmchart
+  before_script:
+    - |
+      cat << EOF > ${VALUES_FILE}
+        image:
+          registry: ${REGISTRY}/sequoiadp/metadata_service:${METADATA_IMAGE_TAG}
+        imagePullSecrets:
+          - name: ${PULL_SECRET}
+      EOF

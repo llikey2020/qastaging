@@ -1,0 +1,56 @@
+include:
+  - services/alluxio.yml
+  - services/frontend.yml
+  - services/metadata.yml
+  - services/mysql.yml
+  - services/schema.yml
+  - services/zeppelin.yml
+
+.generator:
+  # extenders need to generate a file "deployment/${PROJECT}.yml"
+  stage: prepare
+  image: alpine
+  rules:
+    - if: '($DEPLOY_PROJECT == "${PROJECT}" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
+  extends:
+    - .environment
+  variables: {}
+    # PROJECT
+  artifacts:
+    paths:
+      - ${DEPLOYMENTS_DIR}/${PROJECT}.yml
+
+.helm-downloader:
+  stage: prepare
+  rules:
+    - if: '($DEPLOY_PROJECT == "${PROJECT}" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
+  extends:
+    - .environment
+    - .package-pull
+  variables: {}
+    # PACKAGE_NAME:
+    # FILE_NAME:
+    # PACKAGE_VERSION:
+    # CHART_DIR: 
+    # ID:
+  script:
+    - !reference: [".package-pull", "script"]
+    - tar xf ${FILE_NAME}
+  artifacts:
+    paths:
+      - ${CHART_DIR}
+
+.helm-installer:
+  # extenders need to generate a file ${VALUES_FILE}
+  stage: deploy
+  image: ${CI_REGISTRY}/planetrover/infrastructure/helm:3
+  rules:
+    - if: '($DEPLOY_PROJECT == "${PROJECT}" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
+  extends:
+    - .environment
+  variables:
+    VALUES_FILE: values.yml
+    # SERVICE_NAME:
+    # CHART_DIR:
+  script:
+    - helm upgrade --install --values ${VALUES_FILE} ${SERVICE_NAME} ${CHART_DIR}

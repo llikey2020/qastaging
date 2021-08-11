@@ -1,0 +1,30 @@
+# Jobs that run spark extend this hidden job
+.spark-run:
+  image: ${IMAGE}
+  variables:
+    GIT_STRATEGY: none
+    SPARK_CONF_DIR: /tmp/spark/
+    IMAGE: ${REGISTRY}/${SPARK_PROJECT}:${SPARK_IMAGE_TAG}
+  before_script:
+    # Create the Spark defaults file with the common opts
+    - mkdir -p ${SPARK_CONF_DIR}
+    - cd ${SPARK_CONF_DIR}
+    - |
+      cat << EOF > spark-defaults.conf
+      spark.master                                            k8s://${KUBE_URL}
+      spark.kubernetes.report.interval                        60s
+      spark.driver.memory                                     ${SPARK_DRIVER_MEMORY}
+      spark.executor.memory                                   ${SPARK_EXECUTOR_MEMORY}
+      spark.kubernetes.driver.pod.name                        ${SPARK_DRIVER_POD_NAME}
+      spark.kubernetes.authenticate.driver.serviceAccountName spark
+      spark.kubernetes.container.image                        ${IMAGE}
+      spark.kubernetes.namespace                              ${KUBE_NAMESPACE}
+      spark.jars.ivy                                          /tmp/.ivy
+      spark.sql.extensions                                    io.delta.sql.DeltaSparkSessionExtension
+      spark.sql.catalog.spark_catalog                         org.apache.spark.sql.delta.catalog.DeltaCatalog
+      spark.delta.logStore.class                              org.apache.spark.sql.delta.storage.LocalLogStore
+      spark.driver.extraJavaOptions                           -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
+      spark.executor.extraJavaOptions                         -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
+      spark.sql.warehouse.dir                                 alluxio://${ALLUXIO_SVC}/${SPARK_WAREHOUSE}
+      EOF
+    - cat spark-defaults.conf  
