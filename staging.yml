@@ -17,7 +17,7 @@
 stages:
   - prepare
   - deploy
-  - run
+  - deploy-helm
   - cleanup
   - delete-secrets
 

@@ -43,7 +43,7 @@ variables:
 
 Helm install all:
   # Install all helm charts
-  stage: deploy
+  stage: deploy-helm
   image: ${CI_REGISTRY}/planetrover/infrastructure/helm:3
   rules:
     - if: '$ONLY_CLEANUP == "false"'
