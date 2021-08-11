@@ -1,24 +1,15 @@
-History server helm pull:
+History server helm prepare:
   extends:
-    - .helm-downloader
+    - .helm-prepare
   variables:
     PACKAGE_NAME: history-server-helm-chart
     FILE_NAME: history-server-0.1.0.tgz
     PACKAGE_VERSION: "0.1.0"
-    CHART_DIR: history-server
     ID: 55
-
-History server helm install:
-  extends:
-    - .helm-installer
-  needs:
-    - History server helm pull
-  variables:
-    SERVICE_NAME: history-server
-    CHART_DIR: history-server
-  before_script:
+  script:
+    - !reference [".helm-prepare", "script"]
     - |
-      cat << EOF > ${VALUES_FILE}
+      cat << EOF > ${OVERRIDES_FILE}
         eventLog:
           alluxioService: ${ALLUXIO_SVC}
           dir: ${SPARK_EVENTLOG_DIR}

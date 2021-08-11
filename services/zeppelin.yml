@@ -1,24 +1,16 @@
-Zeppelin helm pull:
+Zeppelin helm prepare:
   extends:
-    - .helm-downloader
+    - .helm-prepare
   variables:
+    SERVICE_NAME: zeppelin
     PACKAGE_NAME: zeppelin-helm-chart
     FILE_NAME: zeppelin-0.1.0.tgz
     PACKAGE_VERSION: "0.1.0"
-    CHART_DIR: zeppelin
     ID: 41
-
-Zeppelin helm install:
-  extends:
-    - .helm-installer
-  needs:
-    - Zeppelin helm pull
-  variables:
-    SERVICE_NAME: zeppelin-service
-    CHART_DIR: zeppelin
-  before_script:
+  script:
+    - !reference [".helm-prepare", "script"]
     - |
-      cat << EOF > ${VALUES_FILE}
+      cat << EOF > ${OVERRIDES_FILE}
         imagePullSecrets:
           - name: ${PULL_SECRET}
         image:

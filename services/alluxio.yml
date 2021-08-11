@@ -1,24 +1,16 @@
-Alluxio helm pull:
+Alluxio helm prepare:
   extends:
-    - .helm-downloader
+    - .helm-prepare
   variables:
+    SERVICE_NAME: alluxio
     PACKAGE_NAME: alluxio-helm-chart
     FILE_NAME: alluxio-0.6.22.tgz
     PACKAGE_VERSION: "0.6.22"
-    CHART_DIR: alluxio
     ID: 53
-
-Alluxio helm install:
-  extends:
-    - .helm-installer
-  needs:
-    - Alluxio helm pull
-  variables:
-    SERVICE_NAME: alluxio
-    CHART_DIR: alluxio
-  before_script:
+  script:
+    - !reference [".helm-prepare", "script"]
     - |
-      cat << EOF > ${VALUES_FILE}
+      cat << EOF > ${OVERRIDES_FILE}
         properties:
           alluxio.master.mount.table.root.ufs: ${ALLUXIO_UFS}
           alluxio.master.mount.table.root.option.aws.accessKeyId: ${AWS_ACCESS_KEY_ID}

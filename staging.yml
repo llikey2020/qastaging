@@ -19,6 +19,7 @@ stages:
   - deploy
   - run
   - cleanup
+  - delete-secrets
 
 include:
   - project: planetrover/templates
@@ -140,7 +141,7 @@ Cleanup services:
       done
 
 Delete pull secret:
-  stage: cleanup
+  stage: delete-secrets
   image: ${CI_REGISTRY}/planetrover/infrastructure/staging
   extends:
     - .environment

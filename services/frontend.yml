@@ -1,24 +1,15 @@
-Frontend helm pull:
+Frontend helm prepare:
   extends:
-    - .helm-downloader
+    - .helm-prepare
   variables:
     PACKAGE_NAME: sdp-frontend-helm-chart
     FILE_NAME: sdp-frontend-0.0.2.tgz
     PACKAGE_VERSION: "0.0.2"
-    CHART_DIR: sdp-frontend
     ID: 46
-
-Frontend helm install:
-  extends:
-    - .helm-installer
-  needs:
-    - Frontend helm pull
-  variables:
-    SERVICE_NAME: sdp-frontend-service
-    CHART_DIR: sdp-frontend
-  before_script:
+  script:
+    - !reference [".helm-prepare", "script"]
     - |
-      cat << EOF > ${VALUES_FILE}
+      cat << EOF > ${OVERRIDES_FILE}
         backendServices:
           - name: METASTORE
             value: hive-metastore-service

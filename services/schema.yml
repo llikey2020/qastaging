@@ -1,24 +1,15 @@
-Schema helm pull:
+Schema helm prepare:
   extends:
-    - .helm-downloader
+    - .helm-prepare
   variables:
     PACKAGE_NAME: helm-chart
     FILE_NAME: hive-metastore-0.1.0.tgz
     PACKAGE_VERSION: "0.1.0"
-    CHART_DIR: hive-metastore
     ID: 44
-
-Schema helm install:
-  extends:
-    - .helm-installer
-  needs:
-    - Schema helm pull
-  variables:
-    SERVICE_NAME: schema-service
-    CHART_DIR: hive-metastore
-  before_script:
+  script:
+    - !reference [".helm-prepare", "script"]
     - |
-      cat << EOF > ${VALUES_FILE}
+      cat << EOF > ${OVERRIDES_FILE}
         image:
           registry: ${REGISTRY}
           repository: sequoiadp/hive-metastore-helmchart
