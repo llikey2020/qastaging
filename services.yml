@@ -1,6 +1,6 @@
 stages:
   - prepare
-  - deploy-kustomizations
+  - deploy
   - deploy-charts
   - cleanup
 
@@ -47,7 +47,7 @@ variables:
     paths:
       - ${CHARTS_DIR}
 
-Deploy:
+Deploy resources:
   # Deploy all generated resource configs in the deployments directory
   # Also install helm charts by explicitly referencing sub-scripts
   stage: deploy
