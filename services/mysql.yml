@@ -10,26 +10,25 @@ Generate mysql:
         apiVersion: apps/v1
         kind: Deployment
         metadata:
-        name: ${MYSQL_SVC_NAME}
+          name: ${MYSQL_SVC_NAME}
         spec:
-        selector:
+          selector:
             matchLabels:
-            app: ${MYSQL_SVC_NAME}
-        template:
+              app: ${MYSQL_SVC_NAME}
+          template:
             metadata:
-            labels:
+              labels:
                 app: ${MYSQL_SVC_NAME}
             spec:
-            containers:
-            - image: mysql:${MYSQL_VERSION}
-                name: ${MYSQL_SVC_NAME}
-                env:
-                # Use secret in real usage
-                - name: MYSQL_ROOT_PASSWORD
-                value: ${MYSQL_ROOT_PASSWORD}
-                ports:
-                - containerPort: 3306
-                name: ${MYSQL_SVC_NAME}
+              containers:
+                - image: mysql:${MYSQL_VERSION}
+                  name: ${MYSQL_SVC_NAME}
+                  env:
+                    - name: MYSQL_ROOT_PASSWORD
+                      value: ${MYSQL_ROOT_PASSWORD}
+                  ports:
+                    - containerPort: 3306
+                      name: ${MYSQL_SVC_NAME}
         ---
         apiVersion: v1
         kind: Service
