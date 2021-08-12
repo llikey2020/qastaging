@@ -1,5 +1,5 @@
 variables:
-  ZEPPELIN_SERVICE_NAME: zeppelin-server
+  ZEPPELIN_SERVICE_NAME: zeppelin
 
 Zeppelin helm prepare:
   extends:
