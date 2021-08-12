@@ -59,9 +59,9 @@ Deploy resources:
     - ls deployments/
     - kubectl apply -f deployments/
 
-Helm install all:
+Deploy helm charts:
   # Install all helm charts
-  stage: deploy-helm
+  stage: deploy-charts
   image: ${CI_REGISTRY}/planetrover/infrastructure/helm:3
   rules:
     - if: '$ONLY_CLEANUP == "false"'
