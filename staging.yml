@@ -14,13 +14,6 @@
 # - REGISTRY_USER
 # - REGISTRY_PASSWORD
 
-stages:
-  - prepare
-  - deploy
-  - deploy-helm
-  - cleanup
-  - delete-secrets
-
 include:
   - project: planetrover/templates
     file: templates.yml
@@ -81,7 +74,7 @@ variables:
 
 Registry login:
   # Login to the docker registry and create the secret used for pulling images
-  stage: prepare
+  stage: .pre
   image: ${CI_REGISTRY}/planetrover/infrastructure/staging
   extends:
     - .environment
@@ -93,56 +86,8 @@ Registry login:
         --docker-username=${REGISTRY_USER} \
         --docker-password=${REGISTRY_PASSWORD}
 
-Deploy:
-  # Deploy all generated resource configs in the deployments directory
-  # Also install helm charts by explicitly referencing sub-scripts
-  stage: deploy
-  image: ${CI_REGISTRY}/planetrover/infrastructure/staging
-  extends:
-    - .environment
-  script:
-    - echo "Deploying the following files"
-    - ls deployments/
-    - kubectl apply -f deployments/
-
-Cleanup services:
-  # Remove all services
-  stage: cleanup
-  image: ${CI_REGISTRY}/planetrover/infrastructure/staging
-  rules:
-    - if: '$ONLY_CLEANUP == "true"'
-    - when: manual
-  extends:
-    - .environment
-  variables:
-    TIMEOUT: "60"
-  script:
-    - kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fs rm -RU /${SPARK_WAREHOUSE} || true
-    - kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fs rm -RU /${SPARK_DEPENDENCY_DIR} || true
-    - helm uninstall alluxio alluxio-charts/alluxio || true
-    - kubectl delete pod ${SPARK_DRIVER_POD_NAME} --ignore-not-found=true
-    - kubectl delete service/${MYSQL_SVC_NAME} deployment/${MYSQL_SVC_NAME} || true
-    - helm uninstall zeppelin-service || true
-    - helm uninstall schema-service || true
-    - helm uninstall metadata-service || true
-    - helm uninstall history-server || true
-    - helm uninstall sdp-frontend-service || true
-    - echo "Waiting for resources to cleanup..."
-    - |
-      while [[ $(kubectl get pods --no-headers | wc -l) -gt 0 ]] &&
-            [[ $(kubectl get services --no-headers | wc -l) -gt 0 ]]
-      do
-        if [[ ${TIMEOUT} -le 0 ]]
-        then
-          echo "Timed out waiting for resources to cleanup"
-          exit 1
-        fi
-        TIMEOUT=$((TIMEOUT-1))
-        sleep 1
-      done
-
 Delete pull secret:
-  stage: delete-secrets
+  stage: .post
   image: ${CI_REGISTRY}/planetrover/infrastructure/staging
   extends:
     - .environment
