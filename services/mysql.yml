@@ -21,7 +21,7 @@ Generate mysql:
                 app: ${MYSQL_SVC_NAME}
             spec:
               containers:
-                - image: mysql:${MYSQL_VERSION}
+                - image: 'mysql:${MYSQL_VERSION}'
                   name: ${MYSQL_SVC_NAME}
                   env:
                     - name: MYSQL_ROOT_PASSWORD
