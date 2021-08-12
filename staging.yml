@@ -50,6 +50,9 @@ variables:
   SPARK_DEPENDENCY_DIR:
     value: spark-files/
     description: Path in Alluxio UFS for the Spark SQL jar(s)
+  SPARK_EVENTLOG_DIR:
+    value: spark-logs/
+    description: Path in Alluxio UFS for the Spark Logs
   FRONTEND_IMAGE_TAG:
     value: latest
   SCHEMA_IMAGE_TAG:
