@@ -4,9 +4,4 @@ default:
 .environment:
   environment: testing
 
-workflow:
-  rules:
-    - if: $CI_COMMIT_TAG
-    - if: $CI_COMMIT_BRANCH
-
 include: staging.yml

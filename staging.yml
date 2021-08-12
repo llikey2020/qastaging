@@ -111,6 +111,7 @@ Cleanup services:
   image: ${CI_REGISTRY}/planetrover/infrastructure/staging
   rules:
     - if: '$ONLY_CLEANUP == "true"'
+    - when: manual
   extends:
     - .environment
   variables:
@@ -145,5 +146,6 @@ Delete pull secret:
   image: ${CI_REGISTRY}/planetrover/infrastructure/staging
   extends:
     - .environment
+  when: always
   script:
     - kubectl delete secret ${PULL_SECRET} --ignore-not-found=true
