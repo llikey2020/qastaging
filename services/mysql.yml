@@ -7,37 +7,37 @@ Generate mysql:
     - mkdir ${DEPLOYMENTS_DIR}/
     - |
       cat << EOF > ${DEPLOYMENTS_DIR}/mysql.yml
-        apiVersion: apps/v1
-        kind: Deployment
-        metadata:
-          name: ${MYSQL_SVC_NAME}
-        spec:
-          selector:
-            matchLabels:
-              app: ${MYSQL_SVC_NAME}
-          template:
-            metadata:
-              labels:
-                app: ${MYSQL_SVC_NAME}
-            spec:
-              containers:
-                - image: 'mysql:${MYSQL_VERSION}'
-                  name: ${MYSQL_SVC_NAME}
-                  env:
-                    - name: MYSQL_ROOT_PASSWORD
-                      value: ${MYSQL_ROOT_PASSWORD}
-                  ports:
-                    - containerPort: 3306
-                      name: ${MYSQL_SVC_NAME}
-        ---
-        apiVersion: v1
-        kind: Service
-        metadata:
-          name: ${MYSQL_SVC_NAME}
-        spec:
-          ports:
-            - port: 3306
-          selector:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: ${MYSQL_SVC_NAME}
+      spec:
+        selector:
+          matchLabels:
             app: ${MYSQL_SVC_NAME}
-          clusterIP: None
+        template:
+          metadata:
+            labels:
+              app: ${MYSQL_SVC_NAME}
+          spec:
+            containers:
+              - image: mysql:${MYSQL_VERSION}
+                name: ${MYSQL_SVC_NAME}
+                env:
+                  - name: MYSQL_ROOT_PASSWORD
+                    value: ${MYSQL_ROOT_PASSWORD}
+                ports:
+                  - containerPort: 3306
+                    name: ${MYSQL_SVC_NAME}
+      ---
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: ${MYSQL_SVC_NAME}
+      spec:
+        ports:
+          - port: 3306
+        selector:
+          app: ${MYSQL_SVC_NAME}
+        clusterIP: None
       EOF
