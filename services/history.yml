@@ -14,12 +14,13 @@ History server helm prepare:
     - !reference [".helm-prepare", "script"]
     - |
       cat << EOF > ${OVERRIDES_FILE}
-        eventLog:
-          alluxioService: ${ALLUXIO_SVC}
-          dir: ${SPARK_EVENTLOG_DIR}
-        imagePullSecrets:
-          - name: ${PULL_SECRET}
-        image:
-          repository: ${REGISTRY}/${SPARK_PROJECT}
-          tag: ${SPARK_IMAGE_TAG}
+      eventLog:
+        alluxioService: ${ALLUXIO_SVC}
+        dir: ${SPARK_EVENTLOG_DIR}
+      imagePullSecrets:
+        - name: ${PULL_SECRET}
+      image:
+        repository: ${REGISTRY}/${SPARK_PROJECT}
+        tag: ${SPARK_IMAGE_TAG}
+      fullnameOverride: ${HISTORY_SERVICE_NAME}
       EOF

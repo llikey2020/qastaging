@@ -14,9 +14,10 @@ Schema helm prepare:
     - !reference [".helm-prepare", "script"]
     - |
       cat << EOF > ${OVERRIDES_FILE}
-        image:
-          registry: ${REGISTRY}
-          repository: sequoiadp/hive-metastore-helmchart
-          tag: ${SCHEMA_IMAGE_TAG}
-          pullSecrets: ${PULL_SECRET}
+      image:
+        registry: ${REGISTRY}
+        repository: sequoiadp/hive-metastore-helmchart
+        tag: ${SCHEMA_IMAGE_TAG}
+        pullSecrets: ${PULL_SECRET}
+      fullnameOverride: ${SCHEMA_SERVICE_NAME}
       EOF

@@ -14,11 +14,13 @@ Zeppelin helm prepare:
     - !reference [".helm-prepare", "script"]
     - |
       cat << EOF > ${OVERRIDES_FILE}
-        imagePullSecrets:
-          - name: ${PULL_SECRET}
-        image:
-          repository: ${REGISTRY}/sequoiadp/zeppelin:${ZEPPELIN_IMAGE_TAG}
-          pullPolicy: Always
-        spark:
-          repository: ${REGISTRY}/${SPARK_PROJECT}:${SPARK_IMAGE_TAG}
+      imagePullSecrets:
+        - name: ${PULL_SECRET}
+      image:
+        repository: ${REGISTRY}/sequoiadp/zeppelin:${ZEPPELIN_IMAGE_TAG}
+        pullPolicy: Always
+      spark:
+        repository: ${REGISTRY}/${SPARK_PROJECT}:${SPARK_IMAGE_TAG}
+        imagePullSecret: ${PULL_SECRET}
+      fullnameOverride: ${ZEPPELIN_SERVICE_NAME}
       EOF

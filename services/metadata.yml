@@ -14,8 +14,8 @@ variables:
     - !reference [".helm-prepare", "script"]
     - |
       cat << EOF > ${OVERRIDES_FILE}
-        image:
-          registry: ${REGISTRY}/sequoiadp/metadata_service:${METADATA_IMAGE_TAG}
-        imagePullSecrets:
-          - name: ${PULL_SECRET}
+      image:
+        registry: ${REGISTRY}/sequoiadp/metadata_service:${METADATA_IMAGE_TAG}
+      imagePullSecrets:
+        - name: ${PULL_SECRET}
       EOF

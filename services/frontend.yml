@@ -14,16 +14,17 @@ Frontend helm prepare:
     - !reference [".helm-prepare", "script"]
     - |
       cat << EOF > ${OVERRIDES_FILE}
-        backendServices:
-          - name: METASTORE
-            value: ${SCHEMA_SERVICE_NAME}
-          - name: SPARK_HISTORY_SERVER
-            value: ${HISTORY_SERVICE_NAME}
-          - name: ZEPPELIN
-            value: ${ZEPPELIN_SERVICE_NAME}
-        image:
-          registry: ${REGISTRY}
-          dockerTag: ${FRONTEND_IMAGE_TAG}
-        imagePullSecrets:
-          - name: ${PULL_SECRET}
+      backendServices:
+        - name: METASTORE
+          value: ${SCHEMA_SERVICE_NAME}
+        - name: SPARK_HISTORY_SERVER
+          value: ${HISTORY_SERVICE_NAME}
+        - name: ZEPPELIN
+          value: ${ZEPPELIN_SERVICE_NAME}
+      image:
+        registry: ${REGISTRY}
+        dockerTag: ${FRONTEND_IMAGE_TAG}
+      imagePullSecrets:
+        - name: ${PULL_SECRET}
+      fullnameOverride: ${FRONTEND_SERVICE_NAME}
       EOF
