@@ -74,6 +74,7 @@ Deploy helm charts:
     - cd ${CHARTS_DIR}
     - |
       for SERVICE in $(ls) ; do
+        echo "Installing/upgrading service ${SERVICE}..."
         helm upgrade --install --values ${SERVICE}/${OVERRIDES_FILE} ${SERVICE} ${SERVICE}/*.tgz
       done
 
