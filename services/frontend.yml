@@ -2,6 +2,7 @@ Frontend helm prepare:
   extends:
     - .helm-prepare
   variables:
+    SERVICE_NAME: frontend
     PACKAGE_NAME: sdp-frontend-helm-chart
     FILE_NAME: sdp-frontend-0.0.2.tgz
     PACKAGE_VERSION: "0.0.2"

@@ -2,6 +2,7 @@ Metadata helm prepare:
   extends:
     - .helm-prepare
   variables:
+    SERVICE_NAME: metadata
     PACKAGE_NAME: metadata-helm-chart
     FILE_NAME: helmchart-0.1.0.tgz
     PACKAGE_VERSION: "0.1.0"

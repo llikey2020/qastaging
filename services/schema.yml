@@ -2,6 +2,7 @@ Schema helm prepare:
   extends:
     - .helm-prepare
   variables:
+    SERVICE_NAME: schema
     PACKAGE_NAME: helm-chart
     FILE_NAME: hive-metastore-0.1.0.tgz
     PACKAGE_VERSION: "0.1.0"
