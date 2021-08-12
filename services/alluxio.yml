@@ -1,8 +1,13 @@
+variables:
+  ALLUXIO_SERVICE_NAME: alluxio
+  # ALLUXIO_SVC: ${ALLUXIO_SERVICE_NAME}-master-0:19998
+  ALLUXIO_SVC: alluxio-master-0:19998
+
 Alluxio helm prepare:
   extends:
     - .helm-prepare
   variables:
-    SERVICE_NAME: alluxio
+    SERVICE_NAME: ${ALLUXIO_SERVICE_NAME}
     PACKAGE_NAME: alluxio-helm-chart
     FILE_NAME: alluxio-0.6.22.tgz
     PACKAGE_VERSION: "0.6.22"

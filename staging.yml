@@ -46,7 +46,6 @@ variables:
     description: Path in Alluxio UFS for the Spark SQL performance jar
   ALLUXIO_VERSION:
     value: 2.6.0
-  ALLUXIO_SVC: alluxio-master-0:19998
   SPARK_DEPENDENCY_DIR:
     value: spark-files/
     description: Path in Alluxio UFS for the Spark SQL jar(s)
@@ -65,7 +64,6 @@ variables:
     value: latest
   SPARK_DRIVER_POD_NAME: spark-driver
   MYSQL_VERSION: "5.7"
-  MYSQL_SVC_NAME: mysql
   MYSQL_ROOT_PASSWORD: password
   METASTORE_DATABASE: metastore
   DEPLOYMENTS_DIR: deployments

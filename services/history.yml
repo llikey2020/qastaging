@@ -1,8 +1,11 @@
+variables:
+  HISTORY_SERVICE_NAME: history
+
 History server helm prepare:
   extends:
     - .helm-prepare
   variables:
-    SERVICE_NAME: history
+    SERVICE_NAME: ${HISTORY_SERVICE_NAME}
     PACKAGE_NAME: history-server-helm-chart
     FILE_NAME: history-server-0.1.0.tgz
     PACKAGE_VERSION: "0.1.0"

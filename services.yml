@@ -90,16 +90,16 @@ Cleanup services:
   variables:
     TIMEOUT: "60"
   script:
-    - kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fs rm -RU /${SPARK_WAREHOUSE} || true
-    - kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fs rm -RU /${SPARK_DEPENDENCY_DIR} || true
-    - helm uninstall alluxio alluxio-charts/alluxio || true
+    - kubectl exec ${ALLUXIO_SERVICE_NAME}-master-0 -c alluxio-master -- alluxio fs rm -RU /${SPARK_WAREHOUSE} || true
+    - kubectl exec ${ALLUXIO_SERVICE_NAME}-master-0 -c alluxio-master -- alluxio fs rm -RU /${SPARK_DEPENDENCY_DIR} || true
+    - helm uninstall ${ALLUXIO_SERVICE_NAME} alluxio-charts/alluxio || true
     - kubectl delete pod ${SPARK_DRIVER_POD_NAME} --ignore-not-found=true
-    - kubectl delete service/${MYSQL_SVC_NAME} deployment/${MYSQL_SVC_NAME} || true
-    - helm uninstall zeppelin || true
-    - helm uninstall schema || true
-    - helm uninstall metadata || true
-    - helm uninstall history || true
-    - helm uninstall frontend || true
+    - kubectl delete service/${MYSQL_SERVICE_NAME} deployment/${MYSQL_SERVICE_NAME} || true
+    - helm uninstall ${ZEPPELIN_SERVICE_NAME} || true
+    - helm uninstall ${SCHEMA_SERVICE_NAME} || true
+    - helm uninstall ${METADATA_SERVICE_NAME} || true
+    - helm uninstall ${HISTORY_SERVICE_NAME} || true
+    - helm uninstall ${FRONTEND_SERVICE_NAME} || true
     - echo "Waiting for resources to cleanup..."
     - |
       while [[ $(kubectl get pods --no-headers | wc -l) -gt 0 ]] &&

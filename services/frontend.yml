@@ -1,8 +1,11 @@
+variables:
+  FRONTEND_SERVICE_NAME: frontend
+
 Frontend helm prepare:
   extends:
     - .helm-prepare
   variables:
-    SERVICE_NAME: frontend
+    SERVICE_NAME: ${FRONTEND_SERVICE_NAME}
     PACKAGE_NAME: sdp-frontend-helm-chart
     FILE_NAME: sdp-frontend-0.0.2.tgz
     PACKAGE_VERSION: "0.0.2"
@@ -13,11 +16,11 @@ Frontend helm prepare:
       cat << EOF > ${OVERRIDES_FILE}
         backendServices:
           - name: METASTORE
-            value: hive-metastore-service
+            value: ${SCHEMA_SERVICE_NAME}
           - name: SPARK_HISTORY_SERVER
-            value: history-server
+            value: ${HISTORY_SERVICE_NAME}
           - name: ZEPPELIN
-            value: zeppelin-server
+            value: ${ZEPPELIN_SERVICE_NAME}
         image:
           registry: ${REGISTRY}
           dockerTag: ${FRONTEND_IMAGE_TAG}
