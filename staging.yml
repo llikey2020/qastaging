@@ -78,6 +78,8 @@ Registry login:
   image: ${CI_REGISTRY}/planetrover/infrastructure/staging
   extends:
     - .environment
+  rules:
+    - if: '$ONLY_CLEANUP == "false"'
   script:
     - |
       kubectl create secret docker-registry ${PULL_SECRET} \

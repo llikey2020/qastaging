@@ -94,11 +94,11 @@ Cleanup services:
     - helm uninstall alluxio alluxio-charts/alluxio || true
     - kubectl delete pod ${SPARK_DRIVER_POD_NAME} --ignore-not-found=true
     - kubectl delete service/${MYSQL_SVC_NAME} deployment/${MYSQL_SVC_NAME} || true
-    - helm uninstall zeppelin-service || true
-    - helm uninstall schema-service || true
-    - helm uninstall metadata-service || true
-    - helm uninstall history-server || true
-    - helm uninstall sdp-frontend-service || true
+    - helm uninstall zeppelin || true
+    - helm uninstall schema || true
+    - helm uninstall metadata || true
+    - helm uninstall history || true
+    - helm uninstall frontend || true
     - echo "Waiting for resources to cleanup..."
     - |
       while [[ $(kubectl get pods --no-headers | wc -l) -gt 0 ]] &&
