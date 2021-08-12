@@ -20,7 +20,7 @@ Frontend helm prepare:
         - name: SPARK_HISTORY_SERVER
           value: ${HISTORY_SERVICE_NAME}
         - name: ZEPPELIN
-          value: ${ZEPPELIN_SERVICE_NAME}
+          value: zeppelin-server #${ZEPPELIN_SERVICE_NAME}
       image:
         registry: ${REGISTRY}
         dockerTag: ${FRONTEND_IMAGE_TAG}
