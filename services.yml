@@ -7,6 +7,7 @@ stages:
 include:
   - services/alluxio.yml
   - services/frontend.yml
+  - services/history.yml
   - services/metadata.yml
   - services/mysql.yml
   - services/schema.yml
