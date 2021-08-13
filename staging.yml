@@ -1,0 +1,99 @@
+# Include this template to deploy to an environment defined in a skeleton job like this:
+#
+# .environment:
+#   tags: ["kubernetes"]
+#   environment: testing
+#
+# And define the following variables in the project's Settings -> CI/CD -> Variables:
+# - ALLUXIO_UFS
+# - AWS_ACCESS_KEY_ID
+# - AWS_SECRET_ACCESS_KEY
+#
+# Other variables that the includer could override:
+# - REGISTRY
+# - REGISTRY_USER
+# - REGISTRY_PASSWORD
+
+include:
+  - project: planetrover/templates
+    file: templates.yml
+  - services.yml
+
+variables:
+  DEPLOY_PROJECT:
+    value: all
+    description: all, alluxio, history, hive, metadata, zeppelin
+  ONLY_CLEANUP: 
+    value: "false"
+    description: Skip cleanup when false, only run cleanup when true
+  JOB:
+    value: none
+    description: none
+  SPARK_DRIVER_MEMORY:
+    value: 8g
+    description: spark.driver.memory
+  SPARK_EXECUTOR_MEMORY:
+    value: 8g
+    description: spark.executor.memory
+  CACHE_SSD_SIZE:
+    value: 10G
+    description: Cache SSD quota
+  SPARK_WAREHOUSE:
+    value: spark-warehouse/
+    description: Path in Alluxio UFS for the Spark SQL warehouse files
+  SPARK_SQL_PERF_JAR:
+    value: spark-sql-perf_2.12-0.5.1-SNAPSHOT.jar
+    description: Path in Alluxio UFS for the Spark SQL performance jar
+  ALLUXIO_VERSION:
+    value: 2.6.0
+  SPARK_DEPENDENCY_DIR:
+    value: spark-files/
+    description: Path in Alluxio UFS for the Spark SQL jar(s)
+  SPARK_EVENTLOG_DIR:
+    value: spark-logs/
+    description: Path in Alluxio UFS for the Spark Logs
+  FRONTEND_IMAGE_TAG:
+    value: latest
+  SCHEMA_IMAGE_TAG:
+    value: latest
+  SPARK_IMAGE_TAG:
+    value: latest
+  ZEPPELIN_IMAGE_TAG:
+    value: latest
+  METADATA_IMAGE_TAG:
+    value: latest
+  SPARK_DRIVER_POD_NAME: spark-driver
+  MYSQL_VERSION: "5.7"
+  MYSQL_ROOT_PASSWORD: password
+  METASTORE_DATABASE: metastore
+  DEPLOYMENTS_DIR: deployments
+  PULL_SECRET: docker-login
+  REGISTRY: ${CI_REGISTRY}
+  REGISTRY_USER: ${SEQUOIADP_DEPLOY_TOKEN_USERNAME}
+  REGISTRY_PASSWORD: ${SEQUOIADP_DEPLOY_TOKEN_PASSWORD}
+  SPARK_PROJECT: sequoiadp/spark
+
+Registry login:
+  # Login to the docker registry and create the secret used for pulling images
+  stage: .pre
+  image: ${CI_REGISTRY}/planetrover/infrastructure/staging
+  extends:
+    - .environment
+  rules:
+    - if: '$ONLY_CLEANUP == "false"'
+  script:
+    - |
+      kubectl create secret docker-registry ${PULL_SECRET} \
+        --namespace=${KUBE_NAMESPACE} \
+        --docker-server=${REGISTRY} \
+        --docker-username=${REGISTRY_USER} \
+        --docker-password=${REGISTRY_PASSWORD}
+
+Delete pull secret:
+  stage: .post
+  image: ${CI_REGISTRY}/planetrover/infrastructure/staging
+  extends:
+    - .environment
+  when: always
+  script:
+    - kubectl delete secret ${PULL_SECRET} --ignore-not-found=true

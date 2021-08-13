@@ -1,0 +1,23 @@
+variables:
+  SCHEMA_SERVICE_NAME: schema
+
+Schema helm prepare:
+  extends:
+    - .helm-prepare
+  variables:
+    SERVICE_NAME: ${SCHEMA_SERVICE_NAME}
+    PACKAGE_NAME: helm-chart
+    FILE_NAME: hive-metastore-0.1.0.tgz
+    PACKAGE_VERSION: "0.1.0"
+    ID: 44
+  script:
+    - !reference [".helm-prepare", "script"]
+    - |
+      cat << EOF > ${OVERRIDES_FILE}
+      image:
+        registry: ${REGISTRY}
+        repository: sequoiadp/hive-metastore-helmchart
+        tag: ${SCHEMA_IMAGE_TAG}
+        pullSecrets: ${PULL_SECRET}
+      fullnameOverride: ${SCHEMA_SERVICE_NAME}
+      EOF

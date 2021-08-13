@@ -1,0 +1,26 @@
+variables:
+  ZEPPELIN_SERVICE_NAME: zeppelin
+
+Zeppelin helm prepare:
+  extends:
+    - .helm-prepare
+  variables:
+    SERVICE_NAME: ${ZEPPELIN_SERVICE_NAME}
+    PACKAGE_NAME: zeppelin-helm-chart
+    FILE_NAME: zeppelin-0.1.0.tgz
+    PACKAGE_VERSION: "0.1.0"
+    ID: 41
+  script:
+    - !reference [".helm-prepare", "script"]
+    - |
+      cat << EOF > ${OVERRIDES_FILE}
+      imagePullSecrets:
+        - name: ${PULL_SECRET}
+      image:
+        repository: ${REGISTRY}/sequoiadp/zeppelin:${ZEPPELIN_IMAGE_TAG}
+        pullPolicy: Always
+      spark:
+        repository: ${REGISTRY}/${SPARK_PROJECT}:${SPARK_IMAGE_TAG}
+        imagePullSecret: ${PULL_SECRET}
+      fullnameOverride: ${ZEPPELIN_SERVICE_NAME}
+      EOF

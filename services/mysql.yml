@@ -1,0 +1,46 @@
+variables:
+  MYSQL_SERVICE_NAME: mysql
+
+Generate mysql:
+  extends:
+    - .generator
+  variables:
+    PROJECT: mysql
+  script:
+    - mkdir ${DEPLOYMENTS_DIR}/
+    - |
+      cat << EOF > ${DEPLOYMENTS_DIR}/mysql.yml
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: ${MYSQL_SERVICE_NAME}
+      spec:
+        selector:
+          matchLabels:
+            app: ${MYSQL_SERVICE_NAME}
+        template:
+          metadata:
+            labels:
+              app: ${MYSQL_SERVICE_NAME}
+          spec:
+            containers:
+              - image: mysql:${MYSQL_VERSION}
+                name: ${MYSQL_SERVICE_NAME}
+                env:
+                  - name: MYSQL_ROOT_PASSWORD
+                    value: ${MYSQL_ROOT_PASSWORD}
+                ports:
+                  - containerPort: 3306
+                    name: ${MYSQL_SERVICE_NAME}
+      ---
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: ${MYSQL_SERVICE_NAME}
+      spec:
+        ports:
+          - port: 3306
+        selector:
+          app: ${MYSQL_SERVICE_NAME}
+        clusterIP: None
+      EOF

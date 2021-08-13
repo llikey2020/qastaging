@@ -1,4 +1,0 @@
-include: services/template.yml
-
-variables:
-  PROJECT_NAME: alluxio
