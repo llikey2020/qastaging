@@ -9,7 +9,7 @@ Schema helm prepare:
     PACKAGE_NAME: helm-chart
     FILE_NAME: hive-metastore-0.1.0.tgz
     PACKAGE_VERSION: "0.1.0"
-    ID: 44
+    ID: 50
   script:
     - !reference [".helm-prepare", "script"]
     - |
@@ -18,6 +18,7 @@ Schema helm prepare:
         registry: ${REGISTRY}
         repository: sequoiadp/hive-metastore-helmchart
         tag: ${SCHEMA_IMAGE_TAG}
-        pullSecrets: ${PULL_SECRET}
+        pullSecrets: 
+          - name: ${PULL_SECRET}
       fullnameOverride: ${SCHEMA_SERVICE_NAME}
       EOF

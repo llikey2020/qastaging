@@ -17,10 +17,16 @@ Frontend helm prepare:
       backendServices:
         - name: METASTORE
           value: ${SCHEMA_SERVICE_NAME}
+        - name: METASTORE_NAMESPACE
+          value: ${SERVICE_NAMESPACE}
         - name: SPARK_HISTORY_SERVER
           value: ${HISTORY_SERVICE_NAME}
+        - name: SPARK_HISTORY_SERVER_NAMESPACE
+          value: ${SERVICE_NAMESPACE}
         - name: ZEPPELIN
           value: zeppelin-server #${ZEPPELIN_SERVICE_NAME}
+        - name: ZEPPELIN_NAMESPACE
+          value: ${SERVICE_NAMESPACE}
       image:
         registry: ${REGISTRY}
         dockerTag: ${FRONTEND_IMAGE_TAG}
