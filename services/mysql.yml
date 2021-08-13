@@ -1,7 +1,7 @@
 variables:
   MYSQL_SERVICE_NAME: mysql
 
-Generate mysql:
+.Generate mysql:
   extends:
     - .generator
   variables:
@@ -9,7 +9,7 @@ Generate mysql:
   script:
     - mkdir ${DEPLOYMENTS_DIR}/
     - |
-      cat << EOF > ${DEPLOYMENTS_DIR}/mysql.yml
+      cat << EOF > ${DEPLOYMENTS_DIR}/${PROJECT}.yml
       apiVersion: apps/v1
       kind: Deployment
       metadata:
@@ -44,3 +44,16 @@ Generate mysql:
           app: ${MYSQL_SERVICE_NAME}
         clusterIP: None
       EOF
+
+Generate mysql:
+  extends:
+    - .Generate mysql
+
+Generate test mysql:
+  extends:
+    - .Generate mysql
+  rules:
+    - if: '$UPSTREAM_PROJECT == "metadata"' #temp
+  variables:
+    MYSQL_SERVICE_NAME: mysql-test
+    PROJECT: mysql-test
