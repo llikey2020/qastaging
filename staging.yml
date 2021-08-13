@@ -76,7 +76,7 @@ variables:
 Registry login:
   # Login to the docker registry and create the secret used for pulling images
   stage: .pre
-  image: ${CI_REGISTRY}/planetrover/infrastructure/staging
+  image: ${CI_REGISTRY}/planetrover/infrastructure/kubectl
   extends:
     - .environment
   rules:
@@ -91,7 +91,7 @@ Registry login:
 
 Delete pull secret:
   stage: .post
-  image: ${CI_REGISTRY}/planetrover/infrastructure/staging
+  image: ${CI_REGISTRY}/planetrover/infrastructure/kubectl
   extends:
     - .environment
   when: always
