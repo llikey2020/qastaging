@@ -2,6 +2,7 @@ stages:
   - prepare
   - deploy
   - deploy-charts
+  - verify
   - cleanup
 
 include:
@@ -48,6 +49,33 @@ variables:
   artifacts:
     paths:
       - ${CHARTS_DIR}
+
+.verify-running:
+  stage: verify
+  image: ${CI_REGISTRY}/planetrover/infrastructure/kubectl
+  extends:
+    - .environment
+  variables:
+    TIMEOUT: "60"
+    # SERVICE_NAME:
+    # SERVICE_LABEL:
+    # PROJECT:"
+  script:
+    - |
+      while [ $(kubectl get pod -l ${SERVICE_LABEL} -o jsonpath="{.items[0].status.phase}") != 'Running' ]; do
+       if [[ ${TIMEOUT} -le 0 ]]
+        then
+          echo "Timed out waiting; pod status $(kubectl get pod -l ${SERVICE_LABEL} -o jsonpath="{.items[0].status.phase}") != 'Running'"
+          kubectl describe pods -l ${SERVICE_LABEL}
+          kubectl logs $(kubectl get pod -l ${SERVICE_LABEL} -o jsonpath="{.items[0].metadata.name}")
+          exit 1
+        fi
+       TIMEOUT=$((TIMEOUT-1))
+       sleep 1
+      done
+  after_script:
+    - helm uninstall ${SERVICE_NAME} || true
+    - kubectl delete service/${MYSQL_SERVICE_NAME} deployment/${MYSQL_SERVICE_NAME} || true
 
 Deploy resources:
   # Deploy all generated resource configs in the deployments directory
