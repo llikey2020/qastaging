@@ -20,4 +20,10 @@ Schema helm prepare:
         tag: ${SCHEMA_IMAGE_TAG}
         pullSecrets: ${PULL_SECRET}
       fullnameOverride: ${SCHEMA_SERVICE_NAME}
+      mysql:
+        mysqlHost: ${MYSQL_SERVICE_NAME}
+        mysqlDatabase: metastore
+        mysqlUser: root
+        mysqlPassword: ${MYSQL_ROOT_PASSWORD}
+        initdbScriptsConfigMap: hive-metastore-mysql-init
       EOF
