@@ -5,6 +5,7 @@ Schema helm prepare:
   extends:
     - .helm-prepare
   variables:
+    MYSQL_HOSTNAME: mysql
     SERVICE_NAME: ${SCHEMA_SERVICE_NAME}
     PACKAGE_NAME: helm-chart
     FILE_NAME: hive-metastore-0.1.0.tgz
@@ -20,4 +21,10 @@ Schema helm prepare:
         tag: ${SCHEMA_IMAGE_TAG}
         pullSecrets: ${PULL_SECRET}
       fullnameOverride: ${SCHEMA_SERVICE_NAME}
+      mysql:
+        mysqlHost: ${MYSQL_HOSTNAME}
+        mysqlDatabase: metastore
+        mysqlUser: root
+        mysqlPassword: ${MYSQL_ROOT_PASSWORD}
+        initdbScriptsConfigMap: hive-metastore-mysql-init
       EOF

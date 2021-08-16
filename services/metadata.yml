@@ -23,8 +23,7 @@ variables:
         mysqlHost: ${MYSQL_HOSTNAME}
         mysqlDatabase: metadatadatabase
         mysqlUser: root
-        mysqlPassword: password
-
+        mysqlPassword: ${MYSQL_ROOT_PASSWORD}
       EOF
 
 Metadata helm prepare downstream:
