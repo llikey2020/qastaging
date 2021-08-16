@@ -74,6 +74,7 @@ variables:
       done
   after_script:
     - helm uninstall ${SERVICE_NAME} || true
+    - kubectl delete service/${MYSQL_SERVICE_NAME} deployment/${MYSQL_SERVICE_NAME} || true
 
 Deploy resources:
   # Deploy all generated resource configs in the deployments directory

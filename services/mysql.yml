@@ -53,7 +53,6 @@ Generate test mysql:
   extends:
     - .Generate mysql
   rules:
-    - if: '$UPSTREAM_PROJECT == "metadata"' #temp
+    - if: '$UPSTREAM_PROJECT == "metadata"'
   variables:
-    MYSQL_SERVICE_NAME: mysql-test
     PROJECT: mysql-test

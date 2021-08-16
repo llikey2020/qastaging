@@ -5,7 +5,6 @@ variables:
   extends:
     - .helm-prepare
   variables:
-    MYSQL_HOSTNAME: mysql
     SERVICE_NAME: ${METADATA_SERVICE_NAME}
     PACKAGE_NAME: metadata-helm-chart
     FILE_NAME:  metadata-service-0.1.0.tgz
@@ -20,7 +19,7 @@ variables:
       imagePullSecrets:
         - name: ${PULL_SECRET}
       mysql:
-        mysqlHost: ${MYSQL_HOSTNAME}
+        mysqlHost: ${MYSQL_SERVICE_NAME}
         mysqlDatabase: metadatadatabase
         mysqlUser: root
         mysqlPassword: ${MYSQL_ROOT_PASSWORD}
