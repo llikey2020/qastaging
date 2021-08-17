@@ -52,7 +52,6 @@ variables:
 
 .verify-running:
   stage: verify
-  image: ${CI_REGISTRY}/planetrover/infrastructure/kubectl
   extends:
     - .environment
   variables:
@@ -67,7 +66,8 @@ variables:
         then
           echo "Timed out waiting; pod status $(kubectl get pod -l ${SERVICE_LABEL} -o jsonpath="{.items[0].status.phase}") != 'Running'"
           kubectl describe pods -l ${SERVICE_LABEL}
-          kubectl logs $(kubectl get pod -l ${SERVICE_LABEL} -o jsonpath="{.items[0].metadata.name}")
+          echo "\nLOGS --------\n"
+          kubectl logs $(kubectl get pod -l ${SERVICE_LABEL} -o jsonpath="{.items[0].metadata.name}") --all-containers=true
           exit 1
         fi
        TIMEOUT=$((TIMEOUT-1))
@@ -81,7 +81,6 @@ Deploy resources:
   # Deploy all generated resource configs in the deployments directory
   # Also install helm charts by explicitly referencing sub-scripts
   stage: deploy
-  image: ${CI_REGISTRY}/planetrover/infrastructure/kubectl
   rules:
     - if: '$ONLY_CLEANUP == "false"'
   extends:
@@ -94,23 +93,20 @@ Deploy resources:
 Deploy helm charts:
   # Install all helm charts
   stage: deploy-charts
-  image: ${CI_REGISTRY}/planetrover/infrastructure/kubectl
   rules:
     - if: '$ONLY_CLEANUP == "false"'
   extends:
     - .environment
   script:
-    - cd ${CHARTS_DIR}
     - |
-      for SERVICE in $(ls) ; do
+      for SERVICE in $(ls ${CHARTS_DIR}) ; do
         echo "Installing/upgrading service ${SERVICE}..."
-        helm upgrade --install --values ${SERVICE}/${OVERRIDES_FILE} ${SERVICE} ${SERVICE}/*.tgz
+        helm upgrade --install --values ${CHARTS_DIR}/${SERVICE}/${OVERRIDES_FILE} ${SERVICE} ${CHARTS_DIR}/${SERVICE}/*.tgz
       done
 
 Cleanup services:
   # Remove all services
   stage: cleanup
-  image: ${CI_REGISTRY}/planetrover/infrastructure/kubectl
   rules:
     - if: '$ONLY_CLEANUP == "true"'
     - when: manual

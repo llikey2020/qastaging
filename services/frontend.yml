@@ -5,6 +5,7 @@ Frontend helm prepare:
   extends:
     - .helm-prepare
   variables:
+    PROJECT: frontend
     SERVICE_NAME: ${FRONTEND_SERVICE_NAME}
     PACKAGE_NAME: sdp-frontend-helm-chart
     FILE_NAME: sdp-frontend-0.0.2.tgz
@@ -30,6 +31,7 @@ Frontend helm prepare:
       image:
         registry: ${REGISTRY}
         dockerTag: ${FRONTEND_IMAGE_TAG}
+        imagePullPolicy: Always
       imagePullSecrets:
         - name: ${PULL_SECRET}
       fullnameOverride: ${FRONTEND_SERVICE_NAME}

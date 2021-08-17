@@ -1,10 +1,11 @@
 variables:
   METADATA_SERVICE_NAME: metadata
 
-.Metadata helm prepare:
+Metadata helm prepare:
   extends:
     - .helm-prepare
   variables:
+    PROJECT: metadata
     SERVICE_NAME: ${METADATA_SERVICE_NAME}
     PACKAGE_NAME: metadata-helm-chart
     FILE_NAME:  metadata-service-0.1.0.tgz
@@ -16,6 +17,7 @@ variables:
       cat << EOF > ${OVERRIDES_FILE}
       image:
         registry: ${REGISTRY}/sequoiadp/metadata_service:${METADATA_IMAGE_TAG}
+        pullPolicy: Always
       imagePullSecrets:
         - name: ${PULL_SECRET}
       mysql:
@@ -26,7 +28,7 @@ variables:
       EOF
 
 Metadata helm prepare downstream:
-  extends: .Metadata helm prepare
+  extends: Metadata helm prepare
   rules:
     - if: '$UPSTREAM_PROJECT == "metadata"'
   variables:
