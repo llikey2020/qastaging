@@ -1,7 +1,7 @@
 variables:
   METADATA_SERVICE_NAME: metadata
 
-.Metadata helm prepare:
+Metadata helm prepare:
   extends:
     - .helm-prepare
   variables:
