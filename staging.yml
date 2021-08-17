@@ -87,6 +87,7 @@ Registry login:
   script:
     - |
       if kubectl get secret docker-registry
+      then
         exit 0
       fi
     - |
