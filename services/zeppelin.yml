@@ -38,4 +38,7 @@ Zeppelin helm prepare:
         imagePullSecret: ${PULL_SECRET}
         submitOptions: --conf spark.driver.extraJavaOptions='-Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}' --conf spark.executor.extraJavaOptions='-Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}' --conf spark.sql.warehouse.dir=alluxio:///${ALLUXIO_SVC}/${SPARK_WAREHOUSE} --conf spark.hadoop.hive.metastore.uris=thrift://${ALLUXIO_SVC}
       fullnameOverride: ${ZEPPELIN_SERVICE_NAME}
+      serviceAccount:
+        create: false
+        name: ${SPARK_SERVICE_ACCOUNT}
       EOF
