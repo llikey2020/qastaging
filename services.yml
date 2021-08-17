@@ -24,7 +24,7 @@ variables:
   stage: prepare
   image: alpine
   rules:
-    - if: '($DEPLOY_PROJECT == ${PROJECT} || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
+    - if: '($DEPLOY_PROJECT == "${PROJECT}" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
   variables: {}
     # PROJECT
   artifacts:
