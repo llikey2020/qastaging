@@ -97,11 +97,10 @@ Deploy helm charts:
   extends:
     - .environment
   script:
-    - cd ${CHARTS_DIR}
     - |
-      for SERVICE in $(ls) ; do
+      for SERVICE in $(ls ${CHARTS_DIR}) ; do
         echo "Installing/upgrading service ${SERVICE}..."
-        helm upgrade --install --values ${SERVICE}/${OVERRIDES_FILE} ${SERVICE} ${SERVICE}/*.tgz
+        helm upgrade --install --values ${CHARTS_DIR}/${SERVICE}/${OVERRIDES_FILE} ${SERVICE} ${CHARTS_DIR}/${SERVICE}/*.tgz
       done
 
 Cleanup services:
