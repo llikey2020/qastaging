@@ -20,6 +20,7 @@ Schema helm prepare:
         repository: sequoiadp/hive-metastore-helmchart
         tag: ${SCHEMA_IMAGE_TAG}
         pullSecrets: ${PULL_SECRET}
+        pullPolicy: Always
       fullnameOverride: ${SCHEMA_SERVICE_NAME}
       mysql:
         mysqlHost: ${MYSQL_SERVICE_NAME}

@@ -23,5 +23,6 @@ History server helm prepare:
       image:
         repository: ${REGISTRY}/${SPARK_PROJECT}
         tag: ${SPARK_IMAGE_TAG}
+        pullPolicy: Always
       fullnameOverride: ${HISTORY_SERVICE_NAME}
       EOF
