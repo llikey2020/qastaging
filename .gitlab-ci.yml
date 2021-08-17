@@ -1,96 +1,12 @@
 default:
   tags: ["kubernetes"]
 
-stages:
-  - setup
-  - run
-  - cleanup
-
-variables:
-  JOB:
-    value: none
-    description: none
-  SPARK_IMAGE:
-    value: gitlab.planetrover.io:5050/sequoiadp/spark:latest
-    description: Spark container image to test
-  SPARK_DRIVER_MEMORY:
-    value: 8g
-    description: spark.driver.memory
-  SPARK_EXECUTOR_MEMORY:
-    value: 8g
-    description: spark.executor.memory
-  CACHE_SSD_SIZE:
-    value: 10G
-    description: Cache SSD quota
-  SPARK_WAREHOUSE:
-    value: spark-warehouse/
-    description: Path in Alluxio UFS for the Spark SQL warehouse files
-  SPARK_SQL_PERF_JAR:
-    value: spark-sql-perf_2.12-0.5.1-SNAPSHOT.jar
-    description: Path in Alluxio UFS for the Spark SQL performance jar
-  ALLUXIO_VERSION:
-    value: 2.6.0
-  ALLUXIO_SVC: alluxio-master-0.${KUBE_NAMESPACE}:19998
-  SPARK_DEPENDENCY_DIR:
-    value: spark-files/
-    description: Path in Alluxio UFS for the Spark SQL jar(s)
-  SPARK_DRIVER_POD_NAME: spark-driver
-  MYSQL_VERSION: "5.7"
-  MYSQL_SVC_NAME: mysql
-  MYSQL_ROOT_PASSWORD: password
-  METASTORE_DATABASE: metastore
-  # Project variables configured in Settings -> CI/CD -> Variables:
-  # - ALLUXIO_UFS
-  # - AWS_ACCESS_KEY_ID
-  # - AWS_SECRET_ACCESS_KEY
+workflow:
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: '$CI_COMMIT_BRANCH'
 
 .environment:
   environment: testing
 
-# Jobs that run spark extend this hidden job
-.spark-run:
-  image: ${SPARK_IMAGE}
-  variables:
-    GIT_STRATEGY: none
-    SPARK_CONF_DIR: /tmp/spark/
-  before_script:
-    # Create the Spark defaults file with the common opts
-    - mkdir -p ${SPARK_CONF_DIR}
-    - cd ${SPARK_CONF_DIR}
-    - |
-      cat << EOF > spark-defaults.conf
-      spark.master                                            k8s://${KUBE_URL}
-      spark.kubernetes.report.interval                        60s
-      spark.driver.memory                                     ${SPARK_DRIVER_MEMORY}
-      spark.executor.memory                                   ${SPARK_EXECUTOR_MEMORY}
-      spark.kubernetes.driver.pod.name                        ${SPARK_DRIVER_POD_NAME}
-      spark.kubernetes.authenticate.driver.serviceAccountName spark
-      spark.kubernetes.container.image                        ${SPARK_IMAGE}
-      spark.kubernetes.namespace                              ${KUBE_NAMESPACE}
-      spark.jars.ivy                                          /tmp/.ivy
-      spark.sql.extensions                                    io.delta.sql.DeltaSparkSessionExtension
-      spark.sql.catalog.spark_catalog                         org.apache.spark.sql.delta.catalog.DeltaCatalog
-      spark.delta.logStore.class                              org.apache.spark.sql.delta.storage.LocalLogStore
-      spark.driver.extraJavaOptions                           -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
-      spark.executor.extraJavaOptions                         -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
-      spark.sql.warehouse.dir                                 alluxio://${ALLUXIO_SVC}/${SPARK_WAREHOUSE}
-      EOF
-    - cat spark-defaults.conf
-
-Setup environment:
-  image: ${CI_REGISTRY}/planetrover/infrastructure/staging
-  stage: setup
-  extends:
-    - .environment
-  script:
-    - bash cleanup-env.sh || true
-    - bash setup-env.sh
-
-Cleanup environment:
-  image: ${CI_REGISTRY}/planetrover/infrastructure/staging
-  stage: cleanup
-  extends:
-    - .environment
-  when: manual
-  script:
-    - bash cleanup-env.sh
+include: staging.yml

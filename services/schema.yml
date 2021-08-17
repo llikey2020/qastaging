@@ -1,0 +1,32 @@
+variables:
+  SCHEMA_SERVICE_NAME: schema
+
+Schema helm prepare:
+  extends:
+    - .helm-prepare
+  variables:
+    PROJECT: schema
+    SERVICE_NAME: ${SCHEMA_SERVICE_NAME}
+    PACKAGE_NAME: helm-chart
+    FILE_NAME: hive-metastore-0.1.0.tgz
+    PACKAGE_VERSION: "0.1.0"
+    ID: 50
+  script:
+    - !reference [".helm-prepare", "script"]
+    - |
+      cat << EOF > ${OVERRIDES_FILE}
+      image:
+        registry: ${REGISTRY}
+        repository: sequoiadp/hive-metastore-helmchart
+        tag: ${SCHEMA_IMAGE_TAG}
+        pullSecrets: 
+          - name: ${PULL_SECRET}
+        pullPolicy: Always
+      fullnameOverride: ${SCHEMA_SERVICE_NAME}
+      mysql:
+        mysqlHost: ${MYSQL_SERVICE_NAME}
+        mysqlDatabase: metastore
+        mysqlUser: root
+        mysqlPassword: ${MYSQL_ROOT_PASSWORD}
+        initdbScriptsConfigMap: hive-metastore-mysql-init
+      EOF

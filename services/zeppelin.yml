@@ -1,0 +1,41 @@
+variables:
+  ZEPPELIN_SERVICE_NAME: zeppelin
+
+Zeppelin helm prepare:
+  extends:
+    - .helm-prepare
+  variables:
+    PROJECT: zeppelin
+    SERVICE_NAME: ${ZEPPELIN_SERVICE_NAME}
+    PACKAGE_NAME: zeppelin-helm-chart
+    FILE_NAME: zeppelin-0.1.0.tgz
+    PACKAGE_VERSION: "0.1.0"
+    ID: 41
+  script:
+    - !reference [".helm-prepare", "script"]
+    - |
+      cat << EOF > ${OVERRIDES_FILE}
+      imagePullSecrets:
+        - name: ${PULL_SECRET}
+      image:
+        repository: ${REGISTRY}/sequoiadp/zeppelin:${ZEPPELIN_IMAGE_TAG}
+        pullPolicy: Always
+      backendServices:
+         - name: METASTORE
+           value: ${SCHEMA_SERVICE_NAME}
+         - name: METASTORE_NAMESPACE
+           value: ${SERVICE_NAMESPACE}
+         - name: SPARK_HISTORY_SERVER
+           value: ${HISTORY_SERVICE_NAME}
+         - name: SPARK_HISTORY_SERVER_NAMESPACE
+           value: ${SERVICE_NAMESPACE}
+         - name: ZEPPELIN
+           value: zeppelin-server #${ZEPPELIN_SERVICE_NAME}
+         - name: ZEPPELIN_NAMESPACE
+           value: ${SERVICE_NAMESPACE}
+      spark:
+        repository: ${REGISTRY}/${SPARK_PROJECT}:${SPARK_IMAGE_TAG}
+        imagePullSecret: ${PULL_SECRET}
+        submitOptions: --conf spark.driver.extraJavaOptions='-Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}' --conf spark.executor.extraJavaOptions='-Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}' --conf spark.sql.warehouse.dir=alluxio:///${ALLUXIO_SVC}/${SPARK_WAREHOUSE} --conf spark.hadoop.hive.metastore.uris=thrift://${ALLUXIO_SVC}
+      fullnameOverride: ${ZEPPELIN_SERVICE_NAME}
+      EOF

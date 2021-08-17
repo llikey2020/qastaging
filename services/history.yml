@@ -1,0 +1,28 @@
+variables:
+  HISTORY_SERVICE_NAME: history
+
+History server helm prepare:
+  extends:
+    - .helm-prepare
+  variables:
+    PROJECT: history
+    SERVICE_NAME: ${HISTORY_SERVICE_NAME}
+    PACKAGE_NAME: history-server-helm-chart
+    FILE_NAME: history-server-0.1.0.tgz
+    PACKAGE_VERSION: "0.1.0"
+    ID: 55
+  script:
+    - !reference [".helm-prepare", "script"]
+    - |
+      cat << EOF > ${OVERRIDES_FILE}
+      eventLog:
+        alluxioService: ${ALLUXIO_SVC}
+        dir: ${SPARK_EVENTLOG_DIR}
+      imagePullSecrets:
+        - name: ${PULL_SECRET}
+      image:
+        repository: ${REGISTRY}/${SPARK_PROJECT}
+        tag: ${SPARK_IMAGE_TAG}
+        pullPolicy: Always
+      fullnameOverride: ${HISTORY_SERVICE_NAME}
+      EOF

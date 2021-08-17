@@ -1,0 +1,48 @@
+variables:
+  METADATA_SERVICE_NAME: metadata
+
+Metadata helm prepare:
+  extends:
+    - .helm-prepare
+  variables:
+    PROJECT: metadata
+    SERVICE_NAME: ${METADATA_SERVICE_NAME}
+    PACKAGE_NAME: metadata-helm-chart
+    FILE_NAME:  metadata-service-0.1.0.tgz
+    PACKAGE_VERSION: "0.1.0"
+    ID: 34
+  script:
+    - !reference [".helm-prepare", "script"]
+    - |
+      cat << EOF > ${OVERRIDES_FILE}
+      image:
+        registry: ${REGISTRY}/sequoiadp/metadata_service:${METADATA_IMAGE_TAG}
+        pullPolicy: Always
+      imagePullSecrets:
+        - name: ${PULL_SECRET}
+      mysql:
+        mysqlHost: ${MYSQL_SERVICE_NAME}
+        mysqlDatabase: metadatadatabase
+        mysqlUser: root
+        mysqlPassword: ${MYSQL_ROOT_PASSWORD}
+      EOF
+
+Metadata helm prepare downstream:
+  extends: Metadata helm prepare
+  rules:
+    - if: '$UPSTREAM_PROJECT == "metadata"'
+  variables:
+    MYSQL_HOSTNAME: mysql-test
+    SERVICE_NAME: metadata-test
+    PACKAGE_VERSION: "0.1.0-test"
+    METADATA_IMAGE_TAG: ${COMMIT_TAG}
+
+Metadata verify downstream:
+  extends:
+    - .verify-running
+  rules:
+    - if: '$UPSTREAM_PROJECT == "metadata"'
+  variables:
+    SERVICE_NAME: metadata-test
+    SERVICE_LABEL: app=metadata-microservice
+    PROJECT: metadata
