@@ -2,7 +2,7 @@ variables:
   METADATA_SERVICE_NAME: metadata
   METADATA_SVC: ${METADATA_SERVICE_NAME}:9090
 
-.Metadata helm prepare:
+Metadata helm prepare:
   extends:
     - .helm-prepare
   variables:
@@ -29,7 +29,7 @@ variables:
       EOF
 
 Metadata helm prepare downstream:
-  extends: .Metadata helm prepare
+  extends: Metadata helm prepare
   rules:
     - if: '$UPSTREAM_PROJECT == "metadata"'
   variables:
