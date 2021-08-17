@@ -14,6 +14,10 @@
 # - REGISTRY_USER
 # - REGISTRY_PASSWORD
 
+default:
+  # Use the k8s tooling image by default
+  image: ${CI_REGISTRY}/planetrover/infrastructure/k8s
+
 include:
   - project: planetrover/templates
     file: templates.yml
@@ -76,7 +80,6 @@ variables:
 Registry login:
   # Login to the docker registry and create the secret used for pulling images
   stage: .pre
-  image: ${CI_REGISTRY}/planetrover/infrastructure/kubectl
   extends:
     - .environment
   rules:
@@ -91,7 +94,6 @@ Registry login:
 
 Delete pull secret:
   stage: .post
-  image: ${CI_REGISTRY}/planetrover/infrastructure/kubectl
   extends:
     - .environment
   when: always

@@ -51,7 +51,6 @@ variables:
 
 .verify-running:
   stage: verify
-  image: ${CI_REGISTRY}/planetrover/infrastructure/kubectl
   extends:
     - .environment
   variables:
@@ -81,7 +80,6 @@ Deploy resources:
   # Deploy all generated resource configs in the deployments directory
   # Also install helm charts by explicitly referencing sub-scripts
   stage: deploy
-  image: ${CI_REGISTRY}/planetrover/infrastructure/kubectl
   rules:
     - if: '$ONLY_CLEANUP == "false"'
   extends:
@@ -94,7 +92,6 @@ Deploy resources:
 Deploy helm charts:
   # Install all helm charts
   stage: deploy-charts
-  image: ${CI_REGISTRY}/planetrover/infrastructure/kubectl
   rules:
     - if: '$ONLY_CLEANUP == "false"'
   extends:
@@ -110,7 +107,6 @@ Deploy helm charts:
 Cleanup services:
   # Remove all services
   stage: cleanup
-  image: ${CI_REGISTRY}/planetrover/infrastructure/kubectl
   rules:
     - if: '$ONLY_CLEANUP == "true"'
     - when: manual
