@@ -127,7 +127,6 @@ Cleanup services:
   stage: cleanup
   rules:
     - if: '$ONLY_CLEANUP == "true"'
-    - when: manual
   extends:
     - .environment
   dependencies: [] # skip downloading any artifacts
