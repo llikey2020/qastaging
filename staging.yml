@@ -67,6 +67,7 @@ variables:
   METADATA_IMAGE_TAG:
     value: latest
   SPARK_DRIVER_POD_NAME: spark-driver
+  SPARK_SERVICE_ACCOUNT: spark
   MYSQL_VERSION: "5.7"
   MYSQL_ROOT_PASSWORD: password
   METASTORE_DATABASE: metastore

@@ -54,6 +54,8 @@ variables:
   stage: verify
   extends:
     - .environment
+  rules:
+    - if: '$UPSTREAM_PROJECT == "metadata"'
   variables:
     TIMEOUT: "60"
     # SERVICE_NAME:
@@ -73,7 +75,22 @@ variables:
     - kubectl describe pods -l ${SERVICE_LABEL}
     - echo "\n LOGS -------- \n"
     - kubectl logs $(kubectl get pod -l ${SERVICE_LABEL} -o jsonpath="{.items[0].metadata.name}") --all-containers=true
-  after_script:
+
+
+.verify-cleanup:
+  stage: cleanup
+  rules:
+    - if: '$UPSTREAM_PROJECT == "metadata"'
+      when: manual
+  extends:
+    - .environment
+  variables:
+    TIMEOUT: "60"
+    # SERVICE_NAME:
+    # SERVICE_LABEL:
+    # PROJECT:"
+  script:
+
     - helm uninstall ${SERVICE_NAME} || true
     - kubectl delete service/${MYSQL_SERVICE_NAME} deployment/${MYSQL_SERVICE_NAME} || true
 

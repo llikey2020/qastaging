@@ -41,8 +41,14 @@ Metadata helm prepare downstream:
 Metadata verify downstream:
   extends:
     - .verify-running
-  rules:
-    - if: '$UPSTREAM_PROJECT == "metadata"'
+  variables:
+    SERVICE_NAME: metadata-test
+    SERVICE_LABEL: app=metadata-microservice
+    PROJECT: metadata
+
+Metadata verify cleanup:
+  extends:
+    - .verify-cleanup
   variables:
     SERVICE_NAME: metadata-test
     SERVICE_LABEL: app=metadata-microservice

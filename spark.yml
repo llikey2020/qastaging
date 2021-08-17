@@ -16,7 +16,7 @@
       spark.driver.memory                                     ${SPARK_DRIVER_MEMORY}
       spark.executor.memory                                   ${SPARK_EXECUTOR_MEMORY}
       spark.kubernetes.driver.pod.name                        ${SPARK_DRIVER_POD_NAME}
-      spark.kubernetes.authenticate.driver.serviceAccountName spark
+      spark.kubernetes.authenticate.driver.serviceAccountName ${SPARK_SERVICE_ACCOUNT}
       spark.kubernetes.container.image                        ${IMAGE}
       spark.kubernetes.namespace                              ${KUBE_NAMESPACE}
       spark.jars.ivy                                          /tmp/.ivy
