@@ -6,6 +6,8 @@ variables:
     - .generator
   variables:
     PROJECT: mysql
+  rules:
+    - if: '($DEPLOY_PROJECT == "mysql" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
   script:
     - mkdir ${DEPLOYMENTS_DIR}/
     - |
@@ -53,6 +55,4 @@ Generate test mysql:
   extends:
     - .Generate mysql
   rules:
-    - if: '$UPSTREAM_PROJECT == "metadata"'
-  variables:
-    PROJECT: mysql-test
+    - if: '$DEPLOY_PROJECT == "mysql-test" && $ONLY_CLEANUP == "false"'

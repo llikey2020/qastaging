@@ -33,8 +33,6 @@ variables:
 
 .helm-prepare:
   stage: prepare
-  rules:
-    - if: '($DEPLOY_PROJECT == "${PROJECT}" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
   extends:
     - .package-pull
   variables: {}

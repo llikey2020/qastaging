@@ -4,8 +4,9 @@ variables:
 Frontend helm prepare:
   extends:
     - .helm-prepare
+  rules:
+    - if: '($DEPLOY_PROJECT == "frontend" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
   variables:
-    PROJECT: frontend
     SERVICE_NAME: ${FRONTEND_SERVICE_NAME}
     PACKAGE_NAME: sdp-frontend-helm-chart
     FILE_NAME: sdp-frontend-0.0.2.tgz

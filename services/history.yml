@@ -4,8 +4,9 @@ variables:
 History server helm prepare:
   extends:
     - .helm-prepare
+  rules:
+    - if: '($DEPLOY_PROJECT == "history" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
   variables:
-    PROJECT: history
     SERVICE_NAME: ${HISTORY_SERVICE_NAME}
     PACKAGE_NAME: history-server-helm-chart
     FILE_NAME: history-server-0.1.0.tgz

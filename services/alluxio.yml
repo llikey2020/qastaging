@@ -6,8 +6,9 @@ variables:
 Alluxio helm prepare:
   extends:
     - .helm-prepare
+  rules:
+    - if: '($DEPLOY_PROJECT == "alluxio" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
   variables:
-    PROJECT: alluxio
     SERVICE_NAME: ${ALLUXIO_SERVICE_NAME}
     PACKAGE_NAME: alluxio-helm-chart
     FILE_NAME: alluxio-0.6.22.tgz
