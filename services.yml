@@ -73,7 +73,19 @@ variables:
        TIMEOUT=$((TIMEOUT-1))
        sleep 1
       done
-  after_script:
+
+.verify-cleanup:
+  stage: cleanup
+  rules:
+    - when: manual
+  extends:
+    - .environment
+  variables:
+    TIMEOUT: "60"
+    # SERVICE_NAME:
+    # SERVICE_LABEL:
+    # PROJECT:"
+  script:
     - helm uninstall ${SERVICE_NAME} || true
     - kubectl delete service/${MYSQL_SERVICE_NAME} deployment/${MYSQL_SERVICE_NAME} || true
 

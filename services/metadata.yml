@@ -46,3 +46,13 @@ Metadata verify downstream:
     SERVICE_NAME: metadata-test
     SERVICE_LABEL: app=metadata-microservice
     PROJECT: metadata
+
+Metadata verify cleanup:
+  extends:
+    - .verify-cleanup
+  rules:
+    - if: '$UPSTREAM_PROJECT == "metadata"'
+  variables:
+    SERVICE_NAME: metadata-test
+    SERVICE_LABEL: app=metadata-microservice
+    PROJECT: metadata
