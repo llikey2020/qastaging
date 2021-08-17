@@ -86,7 +86,7 @@ Registry login:
     - if: '$ONLY_CLEANUP == "false"'
   script:
     - |
-      if kubectl get secret docker-registry
+      if kubectl get secret ${PULL_SECRET}
       then
         exit 0
       fi
