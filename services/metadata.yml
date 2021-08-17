@@ -27,7 +27,7 @@ Metadata helm prepare:
       EOF
 
 Metadata helm prepare downstream:
-  extends: .Metadata helm prepare
+  extends: Metadata helm prepare
   rules:
     - if: '$UPSTREAM_PROJECT == "metadata"'
   variables:
