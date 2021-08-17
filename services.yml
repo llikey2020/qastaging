@@ -67,14 +67,15 @@ variables:
        if [[ ${TIMEOUT} -le 0 ]]
         then
           echo "Timed out waiting; pod status $(kubectl get pod -l ${SERVICE_LABEL} -o jsonpath="{.items[0].status.phase}") != 'Running'"
-          kubectl describe pods -l ${SERVICE_LABEL}
-          echo "\nLOGS --------\n"
-          kubectl logs $(kubectl get pod -l ${SERVICE_LABEL} -o jsonpath="{.items[0].metadata.name}") --all-containers=true
           exit 1
         fi
        TIMEOUT=$((TIMEOUT-1))
        sleep 1
       done
+    - kubectl describe pods -l ${SERVICE_LABEL}
+    - echo "\n LOGS -------- \n"
+    - kubectl logs $(kubectl get pod -l ${SERVICE_LABEL} -o jsonpath="{.items[0].metadata.name}") --all-containers=true
+
 
 .verify-cleanup:
   stage: cleanup
@@ -89,6 +90,7 @@ variables:
     # SERVICE_LABEL:
     # PROJECT:"
   script:
+
     - helm uninstall ${SERVICE_NAME} || true
     - kubectl delete service/${MYSQL_SERVICE_NAME} deployment/${MYSQL_SERVICE_NAME} || true
 
@@ -118,6 +120,7 @@ Deploy helm charts:
         echo "Installing/upgrading service ${SERVICE}..."
         helm upgrade --install --values ${CHARTS_DIR}/${SERVICE}/${OVERRIDES_FILE} ${SERVICE} ${CHARTS_DIR}/${SERVICE}/*.tgz
       done
+    - kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fs mkdir /spark-logs || true
 
 Cleanup services:
   # Remove all services

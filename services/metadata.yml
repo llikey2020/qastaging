@@ -1,5 +1,6 @@
 variables:
   METADATA_SERVICE_NAME: metadata
+  METADATA_SVC: ${METADATA_SERVICE_NAME}:9090
 
 Metadata helm prepare:
   extends:

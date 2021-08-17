@@ -1,5 +1,6 @@
 variables:
   SCHEMA_SERVICE_NAME: schema
+  SCHEMA_SVC: ${SCHEMA_SERVICE_NAME}:9083
 
 Schema helm prepare:
   extends:
@@ -17,7 +18,7 @@ Schema helm prepare:
       cat << EOF > ${OVERRIDES_FILE}
       image:
         registry: ${REGISTRY}
-        repository: sequoiadp/hive-metastore-helmchart
+        repository: sequoiadp/hive
         tag: ${SCHEMA_IMAGE_TAG}
         pullSecrets: 
           - name: ${PULL_SECRET}
