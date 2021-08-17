@@ -22,7 +22,7 @@ include:
 variables:
   DEPLOY_PROJECT:
     value: all
-    description: all, alluxio, history, hive, metadata, zeppelin
+    description: all, alluxio, frontend, history, hive, metadata, mysql, schema, zeppelin
   ONLY_CLEANUP: 
     value: "false"
     description: Skip cleanup when false, only run cleanup when true

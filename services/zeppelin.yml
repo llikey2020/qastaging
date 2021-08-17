@@ -5,6 +5,7 @@ Zeppelin helm prepare:
   extends:
     - .helm-prepare
   variables:
+    PROJECT: zeppelin
     SERVICE_NAME: ${ZEPPELIN_SERVICE_NAME}
     PACKAGE_NAME: zeppelin-helm-chart
     FILE_NAME: zeppelin-0.1.0.tgz
