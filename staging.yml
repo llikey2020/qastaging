@@ -86,6 +86,10 @@ Registry login:
     - if: '$ONLY_CLEANUP == "false"'
   script:
     - |
+      if kubectl get secret docker-registry
+        exit 0
+      fi
+    - |
       kubectl create secret docker-registry ${PULL_SECRET} \
         --namespace=${KUBE_NAMESPACE} \
         --docker-server=${REGISTRY} \
