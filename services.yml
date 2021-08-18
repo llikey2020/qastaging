@@ -143,6 +143,7 @@ Cleanup services:
     - helm uninstall ${METADATA_SERVICE_NAME} || true
     - helm uninstall ${HISTORY_SERVICE_NAME} || true
     - helm uninstall ${FRONTEND_SERVICE_NAME} || true
+    - kubectl delete secret ${PULL_SECRET} --ignore-not-found=true
     - echo "Waiting for resources to cleanup..."
     - |
       while [[ $(kubectl get pods --no-headers | wc -l) -gt 0 ]] &&

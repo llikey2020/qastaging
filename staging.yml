@@ -64,22 +64,12 @@ Registry login:
     - if: '$ONLY_CLEANUP == "false"'
   script:
     - |
-      if kubectl get secret ${PULL_SECRET}
+      if ! kubectl get secret ${PULL_SECRET}
       then
-        exit 0
-      fi
-    - |
-      kubectl create secret docker-registry ${PULL_SECRET} \
+        kubectl create secret docker-registry ${PULL_SECRET} \
         --namespace=${KUBE_NAMESPACE} \
         --docker-server=${REGISTRY} \
         --docker-username=${REGISTRY_USER} \
         --docker-password=${REGISTRY_PASSWORD}
-
-Delete pull secret:
-  stage: .post
-  extends:
-    - .environment
-  rules:
-    - if: '$ONLY_CLEANUP == "false"'
-  script:
-    - kubectl delete secret ${PULL_SECRET} --ignore-not-found=true
+      fi
+      
