@@ -30,32 +30,8 @@ variables:
   ONLY_CLEANUP: 
     value: "false"
     description: Skip cleanup when false, only run cleanup when true
-  JOB:
-    value: none
-    description: none
-  SPARK_DRIVER_MEMORY:
-    value: 8g
-    description: spark.driver.memory
-  SPARK_EXECUTOR_MEMORY:
-    value: 8g
-    description: spark.executor.memory
-  CACHE_SSD_SIZE:
-    value: 10G
-    description: Cache SSD quota
-  SPARK_WAREHOUSE:
-    value: spark-warehouse/
-    description: Path in Alluxio UFS for the Spark SQL warehouse files
-  SPARK_SQL_PERF_JAR:
-    value: spark-sql-perf_2.12-0.5.1-SNAPSHOT.jar
-    description: Path in Alluxio UFS for the Spark SQL performance jar
   ALLUXIO_VERSION:
     value: 2.6.0
-  SPARK_DEPENDENCY_DIR:
-    value: spark-files/
-    description: Path in Alluxio UFS for the Spark SQL jar(s)
-  SPARK_EVENTLOG_DIR:
-    value: spark-logs/
-    description: Path in Alluxio UFS for the Spark Logs
   FRONTEND_IMAGE_TAG:
     value: latest
   SCHEMA_IMAGE_TAG:
@@ -66,6 +42,13 @@ variables:
     value: latest
   METADATA_IMAGE_TAG:
     value: latest
+  SPARK_DRIVER_MEMORY: 8g
+  SPARK_EXECUTOR_MEMORY: 8g
+  CACHE_SSD_SIZE: 10G
+  SPARK_WAREHOUSE: spark-warehouse/
+  SPARK_SQL_PERF_JAR: spark-sql-perf_2.12-0.5.1-SNAPSHOT.jar
+  SPARK_DEPENDENCY_DIR: spark-files/
+  SPARK_EVENTLOG_DIR: spark-logs/
   SPARK_DRIVER_POD_NAME: spark-driver
   SPARK_SERVICE_ACCOUNT: spark
   MYSQL_VERSION: "5.7"
