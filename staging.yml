@@ -102,6 +102,7 @@ Delete pull secret:
   stage: .post
   extends:
     - .environment
-  when: always
+  rules:
+    - if: '$ONLY_CLEANUP == "false"'
   script:
     - kubectl delete secret ${PULL_SECRET} --ignore-not-found=true
