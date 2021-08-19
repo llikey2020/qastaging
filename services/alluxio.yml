@@ -37,6 +37,13 @@ Alluxio helm prepare:
           medium: ""
         master:
           count: 1
+          resources:
+            requests:
+              cpu: 200m
+        worker:
+          resources:
+            requests:
+              cpu: 200m
         shortCircuit:
           enabled: false
         tieredstore:
