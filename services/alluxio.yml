@@ -40,10 +40,22 @@ Alluxio helm prepare:
           resources:
             requests:
               cpu: 200m
+              memory: 200Mi
+        jobMaster:
+          resources:
+            requests:
+              cpu: 200m
+              memory: 200Mi
         worker:
           resources:
             requests:
               cpu: 200m
+              memory: 200Mi
+        jobWorker:
+          resources:
+            requests:
+              cpu: 200m
+              memory: 200Mi
         shortCircuit:
           enabled: false
         tieredstore:
