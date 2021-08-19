@@ -80,6 +80,7 @@ variables:
   rules:
     - if: '$UPSTREAM_PROJECT == "metadata"'
       when: manual
+      allow_failure: true
   extends:
     - .environment
   variables:
