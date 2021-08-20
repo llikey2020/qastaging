@@ -102,9 +102,15 @@ Deploy resources:
   extends:
     - .environment
   script:
-    - echo "Deploying the following files"
-    - ls deployments/
-    - kubectl apply -f deployments/
+    - |
+      if [ -d "${DEPLOYMENTS_DIR}/" ] 
+      then
+        echo "Deploying the following files"
+        ls ${DEPLOYMENTS_DIR}/
+        kubectl apply -f ${DEPLOYMENTS_DIR}/
+      else
+        echo "No resources to deploy"
+      fi
 
 Deploy helm charts:
   # Install all helm charts
@@ -115,10 +121,15 @@ Deploy helm charts:
     - .environment
   script:
     - |
-      for SERVICE in $(ls ${CHARTS_DIR}) ; do
-        echo "Installing/upgrading service ${SERVICE}..."
-        helm upgrade --install --values ${CHARTS_DIR}/${SERVICE}/${OVERRIDES_FILE} ${SERVICE} ${CHARTS_DIR}/${SERVICE}/*.tgz
-      done
+      if [ -d "${CHARTS_DIR}/" ]
+      then
+        for SERVICE in $(ls ${CHARTS_DIR}) ; do
+          echo "Installing/upgrading service ${SERVICE}..."
+          helm upgrade --install --values ${CHARTS_DIR}/${SERVICE}/${OVERRIDES_FILE} ${SERVICE} ${CHARTS_DIR}/${SERVICE}/*.tgz
+        done
+      else
+        echo "No helm charts to deploy"
+      fi
     - kubectl exec alluxio-master-0 -c alluxio-master -- alluxio fs mkdir /spark-logs || true
 
 Cleanup services:
