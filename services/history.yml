@@ -17,7 +17,8 @@ History server helm prepare:
     - |
       cat << EOF > ${OVERRIDES_FILE}
       eventLog:
-        alluxioService: ${ALLUXIO_SVC}
+        alluxioService: ${ALLUXIO_MASTER_SERVICE}
+        alluxioRpcPort: ${ALLUXIO_RPC_PORT}
         dir: ${SPARK_EVENTLOG_DIR}
       imagePullSecrets:
         - name: ${PULL_SECRET}
