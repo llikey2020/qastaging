@@ -12,6 +12,7 @@ Frontend helm prepare:
     FILE_NAME: sdp-frontend-0.0.2.tgz
     PACKAGE_VERSION: "0.0.2"
     ID: 46
+    IMAGE_TAG: ${FRONTEND_IMAGE_TAG}
   script:
     - !reference [".helm-prepare", "script"]
     - |
@@ -31,7 +32,7 @@ Frontend helm prepare:
           value: ${SERVICE_NAMESPACE}
       image:
         registry: ${REGISTRY}
-        dockerTag: ${FRONTEND_IMAGE_TAG}
+        dockerTag: ${IMAGE_TAG}
         imagePullPolicy: Always
       imagePullSecrets:
         - name: ${PULL_SECRET}

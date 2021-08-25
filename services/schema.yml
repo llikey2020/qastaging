@@ -13,6 +13,7 @@ Schema helm prepare:
     FILE_NAME: hive-metastore-0.1.0.tgz
     PACKAGE_VERSION: "0.1.0"
     ID: 50
+    IMAGE_TAG: ${SCHEMA_IMAGE_TAG}
   script:
     - !reference [".helm-prepare", "script"]
     - |
@@ -20,7 +21,7 @@ Schema helm prepare:
       image:
         registry: ${REGISTRY}
         repository: sequoiadp/hive
-        tag: ${SCHEMA_IMAGE_TAG}
+        tag: ${IMAGE_TAG}
         pullSecrets: 
           - name: ${PULL_SECRET}
         pullPolicy: Always

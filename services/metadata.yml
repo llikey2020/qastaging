@@ -13,12 +13,13 @@ Metadata helm prepare:
     FILE_NAME:  metadata-0.1.0.tgz
     PACKAGE_VERSION: "0.1.0"
     ID: 34
+    IMAGE_TAG: ${METADATA_IMAGE_TAG}
   script:
     - !reference [".helm-prepare", "script"]
     - |
       cat << EOF > ${OVERRIDES_FILE}
       image:
-        registry: ${REGISTRY}/sequoiadp/metadata_service:${METADATA_IMAGE_TAG}
+        registry: ${REGISTRY}/sequoiadp/metadata_service:${IMAGE_TAG}
         pullPolicy: Always
       imagePullSecrets:
         - name: ${PULL_SECRET}
