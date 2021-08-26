@@ -1,5 +1,6 @@
 variables:
   ZEPPELIN_SERVICE_NAME: zeppelin
+  ZEPPELIN_PROJECT_ID: 38
 
 Zeppelin helm prepare:
   extends:
@@ -11,8 +12,7 @@ Zeppelin helm prepare:
     PACKAGE_NAME: zeppelin-helm-chart
     FILE_NAME: zeppelin-0.1.0.tgz
     PACKAGE_VERSION: "0.1.0"
-    ID: 38
-    IMAGE_TAG: ${ZEPPELIN_IMAGE_TAG}
+    ID: ${ZEPPELIN_PROJECT_ID}
   script:
     - !reference [".helm-prepare", "script"]
     - |
@@ -20,7 +20,7 @@ Zeppelin helm prepare:
       imagePullSecrets:
         - name: ${PULL_SECRET}
       image:
-        repository: ${REGISTRY}/sequoiadp/zeppelin:${IMAGE_TAG}
+        repository: ${REGISTRY}/sequoiadp/zeppelin:${ZEPPELIN_IMAGE_TAG}
         pullPolicy: Always
       backendServices:
          - name: METASTORE

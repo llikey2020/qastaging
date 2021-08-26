@@ -73,4 +73,22 @@ Registry login:
         --docker-username=${REGISTRY_USER} \
         --docker-password=${REGISTRY_PASSWORD}
       fi
-      
+
+Setup environment:
+  stage: .pre
+  rules:
+    - if: '$ONLY_CLEANUP == "false"'
+  script:
+    - |
+      for i in FRONTEND SCHEMA SPARK METADATA ZEPPELIN
+      do
+        IMAGE_TAG=${i}_IMAGE_TAG
+        PROJECT_ID=${i}_PROJECT_ID
+        if [ ${!IMAGE_TAG} = "latest" ]
+        then
+          echo "${IMAGE_TAG}=$(curl --header "PRIVATE-TOKEN: ${CI_API_TOKEN}" "${CI_API_V4_URL}/projects/${!PROJECT_ID}/repository/commits/master" | jq -r '.id')" >> staging.env
+        fi
+      done
+  artifacts:
+    reports:
+      dotenv: staging.env

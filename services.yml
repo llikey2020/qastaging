@@ -35,27 +35,15 @@ variables:
   stage: prepare
   extends:
     - .package-pull
-  image: ${CI_REGISTRY}/planetrover/infrastructure/k8s
   variables: {}
     # SERVICE_NAME:
     # PACKAGE_NAME:
     # FILE_NAME:
     # PACKAGE_VERSION:
     # ID:
-    # IMAGE_TAG:
   before_script:
     - mkdir -p ${CHARTS_DIR}/${SERVICE_NAME}/
     - cd ${CHARTS_DIR}/${SERVICE_NAME}/
-    - |
-      if [ $SPARK_IMAGE_TAG = "latest" ]
-      then
-        SPARK_IMAGE_TAG=$(curl --header "PRIVATE-TOKEN: ${CI_API_TOKEN}" "${CI_API_V4_URL}/projects/${SPARK_PROJECT_ID}/repository/commits/master" | jq -r '.id')
-      fi
-    - |
-      if [ $IMAGE_TAG = "latest" ]
-      then
-        IMAGE_TAG=$(curl --header "PRIVATE-TOKEN: ${CI_API_TOKEN}" "${CI_API_V4_URL}/projects/${ID}/repository/commits/master" | jq -r '.id')
-      fi
   artifacts:
     paths:
       - ${CHARTS_DIR}
