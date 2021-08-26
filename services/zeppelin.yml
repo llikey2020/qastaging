@@ -11,7 +11,7 @@ Zeppelin helm prepare:
     PACKAGE_NAME: zeppelin-helm-chart
     FILE_NAME: zeppelin-0.1.0.tgz
     PACKAGE_VERSION: "0.1.0"
-    ID: 41
+    ID: 38
   script:
     - !reference [".helm-prepare", "script"]
     - |
