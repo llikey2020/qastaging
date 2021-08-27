@@ -1,6 +1,7 @@
 variables:
   METADATA_SERVICE_NAME: metadata
   METADATA_SVC: ${METADATA_SERVICE_NAME}:9090
+  METADATA_PROJECT_ID: 34
 
 Metadata helm prepare:
   extends:
@@ -12,7 +13,7 @@ Metadata helm prepare:
     PACKAGE_NAME: metadata-helm-chart
     FILE_NAME:  metadata-0.1.0.tgz
     PACKAGE_VERSION: "0.1.0"
-    ID: 34
+    ID: ${METADATA_PROJECT_ID}
   script:
     - !reference [".helm-prepare", "script"]
     - |

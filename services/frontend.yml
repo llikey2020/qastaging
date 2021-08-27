@@ -1,5 +1,6 @@
 variables:
   FRONTEND_SERVICE_NAME: frontend
+  FRONTEND_PROJECT_ID: 46
 
 Frontend helm prepare:
   extends:
@@ -11,7 +12,7 @@ Frontend helm prepare:
     PACKAGE_NAME: sdp-frontend-helm-chart
     FILE_NAME: sdp-frontend-0.0.2.tgz
     PACKAGE_VERSION: "0.0.2"
-    ID: 46
+    ID: ${FRONTEND_PROJECT_ID}
   script:
     - !reference [".helm-prepare", "script"]
     - |

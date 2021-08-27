@@ -1,6 +1,7 @@
 variables:
   SCHEMA_SERVICE_NAME: schema
   SCHEMA_SVC: ${SCHEMA_SERVICE_NAME}:9083
+  SCHEMA_PROJECT_ID: 50
 
 Schema helm prepare:
   extends:
@@ -12,7 +13,7 @@ Schema helm prepare:
     PACKAGE_NAME: helm-chart
     FILE_NAME: hive-metastore-0.1.0.tgz
     PACKAGE_VERSION: "0.1.0"
-    ID: 50
+    ID: ${SCHEMA_PROJECT_ID}
   script:
     - !reference [".helm-prepare", "script"]
     - |

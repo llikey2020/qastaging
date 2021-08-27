@@ -1,5 +1,6 @@
 variables:
   HISTORY_SERVICE_NAME: history
+  HISTORY_PROJECT_ID: 55
 
 History server helm prepare:
   extends:
@@ -11,7 +12,7 @@ History server helm prepare:
     PACKAGE_NAME: history-server-helm-chart
     FILE_NAME: history-server-0.1.0.tgz
     PACKAGE_VERSION: "0.1.0"
-    ID: 55
+    ID: ${HISTORY_PROJECT_ID}
   script:
     - !reference [".helm-prepare", "script"]
     - |

@@ -5,6 +5,7 @@ variables:
   ALLUXIO_MASTER_SERVICE: alluxio-master-0
   # ALLUXIO_SVC: ${ALLUXIO_MASTER_SERVICE}:${ALLUXIO_RPC_PORT}
   ALLUXIO_SVC: alluxio-master-0:19998
+  ALLUXIO_PROJECT_ID: 53
 
 Alluxio helm prepare:
   extends:
@@ -16,7 +17,7 @@ Alluxio helm prepare:
     PACKAGE_NAME: alluxio-helm-chart
     FILE_NAME: alluxio-0.6.22.tgz
     PACKAGE_VERSION: "0.6.22"
-    ID: 53
+    ID: ${ALLUXIO_PROJECT_ID}
   script:
     - !reference [".helm-prepare", "script"]
     - |

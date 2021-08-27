@@ -71,7 +71,7 @@ variables:
        sleep 1
       done
     - kubectl describe pods -l ${SERVICE_LABEL}
-    - echo "\n LOGS -------- \n"
+    - echo -e "\n LOGS -------- \n"
     - kubectl logs $(kubectl get pod -l ${SERVICE_LABEL} -o jsonpath="{.items[0].metadata.name}") --all-containers=true
 
 
