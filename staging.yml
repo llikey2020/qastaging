@@ -55,7 +55,8 @@ variables:
   REGISTRY_PASSWORD: ${SEQUOIADP_DEPLOY_TOKEN_PASSWORD}
   SPARK_PROJECT: sequoiadp/spark
   SPARK_PROJECT_ID: 2
-
+  BATCH_JOB_SERVICE_NAME: batch-job
+  
 Registry login:
   # Login to the docker registry and create the secret used for pulling images
   stage: .pre

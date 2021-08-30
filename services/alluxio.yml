@@ -6,6 +6,7 @@ variables:
   # ALLUXIO_SVC: ${ALLUXIO_MASTER_SERVICE}:${ALLUXIO_RPC_PORT}
   ALLUXIO_SVC: alluxio-master-0:19998
   ALLUXIO_PROJECT_ID: 53
+  ALLUXIO_PROXY_NAME: alluxio-proxy
 
 Alluxio helm prepare:
   extends:
