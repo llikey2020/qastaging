@@ -7,7 +7,7 @@ variables:
   variables:
     PROJECT: mysql
   rules:
-    - if: '($DEPLOY_PROJECT == "mysql" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
+    - if: '($DEPLOY_PROJECT =~ /mysql/ || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
   script:
     - mkdir ${DEPLOYMENTS_DIR}/
     - |

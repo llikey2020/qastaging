@@ -7,7 +7,7 @@ Schema helm prepare:
   extends:
     - .helm-prepare
   rules:
-    - if: '($DEPLOY_PROJECT == "schema" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
+    - if: '($DEPLOY_PROJECT =~ /schema/ || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
   variables:
     SERVICE_NAME: ${SCHEMA_SERVICE_NAME}
     PACKAGE_NAME: helm-chart

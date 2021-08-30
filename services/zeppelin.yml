@@ -6,7 +6,7 @@ Zeppelin helm prepare:
   extends:
     - .helm-prepare
   rules:
-    - if: '($DEPLOY_PROJECT == "zeppelin" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
+    - if: '($DEPLOY_PROJECT =~ /zeppelin/ || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
   variables:
     SERVICE_NAME: ${ZEPPELIN_SERVICE_NAME}
     PACKAGE_NAME: zeppelin-helm-chart
