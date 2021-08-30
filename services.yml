@@ -11,6 +11,7 @@ include:
   - services/history.yml
   - services/metadata.yml
   - services/mysql.yml
+  - services/spark-operator.yml
   - services/schema.yml
   - services/zeppelin.yml
 

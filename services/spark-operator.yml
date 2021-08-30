@@ -1,0 +1,21 @@
+variables:
+  SPARK_OPERATOR_SERVICE_NAME: spark-operator
+  SPARK_OPERATOR_PROJECT_ID: 62
+
+Spark operator helm prepare:
+  extends:
+    - .helm-prepare
+  rules:
+    - if: '($DEPLOY_PROJECT == "sparkOperator" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
+  variables:
+    SERVICE_NAME: ${SPARK_OPERATOR_SERVICE_NAME}
+    PACKAGE_NAME: spark-operator-helm-chart
+    FILE_NAME: spark-operator-1.1.6.tgz
+    PACKAGE_VERSION: "1.1.6"
+    ID: ${SPARK_OPERATOR_PROJECT_ID}
+  script:
+    - !reference [".helm-prepare", "script"]
+    - |
+      cat << EOF > ${OVERRIDES_FILE}
+      sparkJobNamespace: ${SERVICE_NAMESPACE}
+      EOF

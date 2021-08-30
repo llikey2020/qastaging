@@ -38,7 +38,6 @@ Metadata helm prepare downstream:
     MYSQL_HOSTNAME: mysql-test
     SERVICE_NAME: metadata-test
     PACKAGE_VERSION: "0.1.0-test"
-    METADATA_IMAGE_TAG: ${COMMIT_TAG}
 
 Metadata verify downstream:
   extends:
