@@ -90,6 +90,8 @@ Setup environment:
           echo "${IMAGE_TAG}=$(curl --header "PRIVATE-TOKEN: ${CI_API_TOKEN}" "${CI_API_V4_URL}/projects/${!PROJECT_ID}/repository/commits/master" | jq -r '.id')" >> staging.env
         fi
       done
+  after_script:
+    - cat staging.env
   artifacts:
     reports:
       dotenv: staging.env
