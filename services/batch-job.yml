@@ -1,0 +1,47 @@
+variables:
+  BATCH_JOB_SERVICE_NAME: batch-job
+  BATCH_JOB_PROJECT_ID: 61
+
+Batch job helm prepare:
+  extends:
+    - .helm-prepare
+  rules:
+    - if: '($DEPLOY_PROJECT == "batchJob" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
+  variables:
+    SERVICE_NAME: ${BATCH_JOB_SERVICE_NAME}
+    PACKAGE_NAME: batch-job-helm-chart
+    FILE_NAME: batch-job-0.1.0.tgz
+    PACKAGE_VERSION: "0.1.0"
+    ID: ${BATCH_JOB_PROJECT_ID}
+  script:
+    - !reference [".helm-prepare", "script"]
+    - |
+      cat << EOF > ${OVERRIDES_FILE}
+      imagePullSecrets:
+        - name: ${PULL_SECRET}
+      image:
+        repository: ${REGISTRY}/sequoiadp/batch-job
+        tag: ${BATCH_JOB_IMAGE_TAG}
+        pullPolicy: Always
+      sparkJob:
+        namespace: ${SERVICE_NAMESPACE}
+        image: ${REGISTRY}/${SPARK_PROJECT}:${SPARK_IMAGE_TAG}
+        imagePullSecrets: 
+          - name: ${PULL_SECRET}
+        sparkConf:
+          spark.jars.ivy:                                          /tmp/.ivy
+          spark.sql.extensions:                                    io.delta.sql.DeltaSparkSessionExtension
+          spark.sql.catalog.spark_catalog:                         org.apache.spark.sql.delta.catalog.DeltaCatalog
+          spark.delta.logStore.class:                              org.apache.spark.sql.delta.storage.LocalLogStore
+          spark.sql.warehouse.dir:                                 alluxio://${ALLUXIO_SVC}/${SPARK_WAREHOUSE}
+          spark.eventLog.enabled:                                  "true"
+          spark.eventLog.dir:                                      alluxio://${ALLUXIO_SVC}/${SPARK_EVENTLOG_DIR}
+        driver:
+          javaOptions: -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
+        executor:
+          javaOptions: -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
+      fullnameOverride: ${BATCH_JOB_SERVICE_NAME}
+      serviceAccount:
+        create: false
+        name: ${SPARK_SERVICE_ACCOUNT}
+      EOF

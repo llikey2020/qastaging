@@ -26,11 +26,12 @@ include:
 variables:
   DEPLOY_PROJECT:
     value: all
-    description: all, alluxio, frontend, history, hive, metadata, mysql, schema, zeppelin
+    description: all, alluxio, batch-job, frontend, history, hive, metadata, mysql, schema, spark-operator, zeppelin
   ONLY_CLEANUP: 
     value: "false"
     description: Skip cleanup when false, only run cleanup when true
   ALLUXIO_VERSION: 2.6.0
+  BATCH_JOB_IMAGE_TAG: latest
   FRONTEND_IMAGE_TAG: latest
   SCHEMA_IMAGE_TAG: latest
   SPARK_IMAGE_TAG: latest
@@ -55,7 +56,6 @@ variables:
   REGISTRY_PASSWORD: ${SEQUOIADP_DEPLOY_TOKEN_PASSWORD}
   SPARK_PROJECT: sequoiadp/spark
   SPARK_PROJECT_ID: 2
-  BATCH_JOB_SERVICE_NAME: batch-job
   
 Registry login:
   # Login to the docker registry and create the secret used for pulling images
@@ -81,7 +81,7 @@ Setup environment:
     - if: '$ONLY_CLEANUP == "false"'
   script:
     - |
-      for i in FRONTEND SCHEMA SPARK METADATA ZEPPELIN
+      for i in BATCH_JOB FRONTEND SCHEMA SPARK METADATA ZEPPELIN
       do
         IMAGE_TAG=${i}_IMAGE_TAG
         PROJECT_ID=${i}_PROJECT_ID
