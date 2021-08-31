@@ -26,7 +26,7 @@ include:
 variables:
   DEPLOY_PROJECT:
     value: all
-    description: all, alluxio, batch-job, frontend, history, hive, metadata, mysql, schema, spark-operator, zeppelin
+    description: all, alluxio, batchJob, frontend, history, hive, metadata, mysql, schema, sparkDashboard, sparkOperator, zeppelin
   ONLY_CLEANUP: 
     value: "false"
     description: Skip cleanup when false, only run cleanup when true
