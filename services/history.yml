@@ -1,6 +1,6 @@
 variables:
   HISTORY_SERVICE_NAME: history
-  HISTORY_PROJECT_ID: 55
+  HISTORY_PROJECT_ID: 2
 
 History server helm prepare:
   extends:

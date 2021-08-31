@@ -7,6 +7,7 @@ stages:
 
 include:
   - services/alluxio.yml
+  - services/batch-job.yml
   - services/frontend.yml
   - services/history.yml
   - services/metadata.yml
@@ -152,6 +153,8 @@ Cleanup services:
     - helm uninstall ${METADATA_SERVICE_NAME} || true
     - helm uninstall ${HISTORY_SERVICE_NAME} || true
     - helm uninstall ${FRONTEND_SERVICE_NAME} || true
+    - helm uninstall ${BATCH_JOB_SERVICE_NAME} || true
+    - helm uninstall ${SPARK_OPERATOR_SERVICE_NAME} || true
     - kubectl delete secret ${PULL_SECRET} --ignore-not-found=true
     - echo "Waiting for resources to cleanup..."
     - |
