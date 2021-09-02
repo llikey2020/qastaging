@@ -41,7 +41,4 @@ Batch job helm prepare:
         executor:
           javaOptions: -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
       fullnameOverride: ${BATCH_JOB_SERVICE_NAME}
-      serviceAccount:
-        create: false
-        name: ${SPARK_SERVICE_ACCOUNT}
       EOF
