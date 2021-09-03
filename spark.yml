@@ -24,7 +24,7 @@
       spark.kubernetes.driver.pod.name                        ${SPARK_DRIVER_POD_NAME}
       spark.kubernetes.authenticate.driver.serviceAccountName spark
       spark.kubernetes.container.image                        ${SPARK_IMAGE}
-      spark.kubernetes.container.image.pullSecrets            ${SPARK_REGISTRY_LOGIN_SECRET}
+      spark.kubernetes.container.image.pullSecrets            ${PULL_SECRET}
       spark.kubernetes.container.image.pullPolicy             Always
       spark.kubernetes.namespace                              ${KUBE_NAMESPACE}
       spark.jars.ivy                                          /tmp/.ivy
