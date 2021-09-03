@@ -12,7 +12,7 @@ Alluxio helm prepare:
   extends:
     - .helm-prepare
   rules:
-    - if: '($DEPLOY_PROJECT == "alluxio" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
+    - if: '($DEPLOY_PROJECT =~ /alluxio/ || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
   variables:
     SERVICE_NAME: ${ALLUXIO_SERVICE_NAME}
     PACKAGE_NAME: alluxio-helm-chart

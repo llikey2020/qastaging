@@ -6,7 +6,7 @@ Batch job helm prepare:
   extends:
     - .helm-prepare
   rules:
-    - if: '($DEPLOY_PROJECT == "batchJob" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
+    - if: '($DEPLOY_PROJECT =~ /batchJob/ || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
   variables:
     SERVICE_NAME: ${BATCH_JOB_SERVICE_NAME}
     PACKAGE_NAME: batch-job-helm-chart

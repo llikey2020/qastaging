@@ -14,6 +14,7 @@ include:
   - services/mysql.yml
   - services/spark-operator.yml
   - services/schema.yml
+  - services/spark-dashboard.yml
   - services/zeppelin.yml
 
 variables:
@@ -156,6 +157,7 @@ Cleanup services:
     - helm uninstall ${FRONTEND_SERVICE_NAME} || true
     - helm uninstall ${BATCH_JOB_SERVICE_NAME} || true
     - helm uninstall ${SPARK_OPERATOR_SERVICE_NAME} || true
+    - helm uninstall ${SPARK_DASHBOARD_SERVICE_NAME} || true
     - kubectl delete secret ${PULL_SECRET} --ignore-not-found=true
     - echo "Waiting for resources to cleanup..."
     - |
