@@ -12,9 +12,9 @@ If the service was already present in the staging environment, triggering the pi
 
 Deployed services pull docker images using the `docker-login` kubernetes secret present in the staging environment.
 
-# Verifying services are running
+## Verifying services are running
 
-## Manual
+### Manual
 
 You can verify that a service is running by manually running a port forward from the pod in the staging environment. First, set your $KUBE_CONFIG to point to our Kubernetes cluster. Next, run the following:
 
@@ -24,7 +24,7 @@ kubectl port-forward --namespace staging-48-testing --address 0.0.0.0 <pod-name>
 
 You can then check the service's UI through `localhost:<local-port>`. For example, if you run `kubectl port-forward --namespace staging-48-testing --address 0.0.0.0 frontend-5966cddd84-mxzsd 8080:80`, you can see the SequoiaDP UI at `localhost:8080`. 
 
-## Downstream pipeline
+### Downstream pipeline
 
 Currently, the following services trigger a downstream pipeline in Staging:
 
@@ -32,13 +32,13 @@ Currently, the following services trigger a downstream pipeline in Staging:
 
 This pipeline deploys a separate test version of the service in the staging environment, as well as a separate test version of the MySQL service if needed. It then verifies that the newly deployed service's pods start running successfully. This test version does not affect the services normally deployed in staging, and is based on the version of the helm chart and docker image created by the specific upstream commit that triggered this downstream deploy.
 
-# Cleaning up services
+## Cleaning up services
 
-## Triggering clean up jobs
+### Triggering clean up jobs
 
-You can trigger the staging clean up job by manually triggering a pipeline in staging through `Run Pipeline` and setting the variable ONLY_CLEANUP to 'true'.  **Note that this action deletes all services running in the staging environment, and is therefore rarely run.**
+You can trigger the staging clean up job by manually triggering a pipeline in staging through 'Run Pipeline' and setting the variable ONLY_CLEANUP to 'true'.  **Note that this action deletes all services running in the staging environment, and is therefore rarely run.**
 
-The clean up job for downstream pipelines is also manually triggered, and can be found in the last stage of the downstream pipeline. **This job only deletes the services created by the downstream pipeline.**
+The clean up job for downstream pipelines is also manually triggered, and can be found in the last stage of the downstream pipeline. This job only deletes the services created by the downstream pipeline.
 
 ## Related projects
 
