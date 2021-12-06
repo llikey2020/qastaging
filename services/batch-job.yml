@@ -33,12 +33,5 @@ Batch job helm prepare:
           spark.sql.extensions:                                    io.delta.sql.DeltaSparkSessionExtension
           spark.sql.catalog.spark_catalog:                         org.apache.spark.sql.delta.catalog.DeltaCatalog
           spark.delta.logStore.class:                              org.apache.spark.sql.delta.storage.LocalLogStore
-          spark.sql.warehouse.dir:                                 alluxio://${ALLUXIO_SVC}/${SPARK_WAREHOUSE}
-          spark.eventLog.enabled:                                  "true"
-          spark.eventLog.dir:                                      alluxio://${ALLUXIO_SVC}/${SPARK_EVENTLOG_DIR}
-        driver:
-          javaOptions: -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
-        executor:
-          javaOptions: -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
       fullnameOverride: ${BATCH_JOB_SERVICE_NAME}
       EOF
