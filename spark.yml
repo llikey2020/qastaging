@@ -31,11 +31,6 @@
       spark.sql.extensions                                    io.delta.sql.DeltaSparkSessionExtension
       spark.sql.catalog.spark_catalog                         org.apache.spark.sql.delta.catalog.DeltaCatalog
       spark.delta.logStore.class                              org.apache.spark.sql.delta.storage.LocalLogStore
-      spark.driver.extraJavaOptions                           -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
-      spark.executor.extraJavaOptions                         -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
-      spark.sql.warehouse.dir                                 alluxio://${ALLUXIO_SVC}/${SPARK_WAREHOUSE}
-      spark.eventLog.enabled                                  ${SPARK_EVENT_LOG_ENABLED}
-      spark.eventLog.dir                                      alluxio://${ALLUXIO_SVC}/${SPARK_EVENTLOG_DIR}
       # spark.metrics.* confs enable spark-dashboard to monitor Spark job
       spark.metrics.conf.*.sink.graphite.class                org.apache.spark.metrics.sink.GraphiteSink
       spark.metrics.conf.*.sink.graphite.host                 spark-dashboard-influx.${KUBE_NAMESPACE}

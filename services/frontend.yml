@@ -34,10 +34,6 @@ Frontend helm prepare:
           value: ${BATCH_JOB_SERVICE_NAME}
         - name: BATCH_JOB_NAMESPACE
           value: ${SERVICE_NAMESPACE}
-        - name: ALLUXIO_PROXY
-          value: ${ALLUXIO_PROXY_NAME}
-        - name: ALLUXIO_PROXY_NAMESPACE
-          value: ${SERVICE_NAMESPACE}
       image:
         registry: ${REGISTRY}
         dockerTag: ${FRONTEND_IMAGE_TAG}

@@ -39,12 +39,8 @@ Zeppelin helm prepare:
         repository: ${REGISTRY}/${SPARK_PROJECT}:${SPARK_IMAGE_TAG}
         imagePullSecret: ${PULL_SECRET}
         submitConfOptions:
-          spark.driver.extraJavaOptions: '-Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}'
-          spark.executor.extraJavaOptions: '-Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}'
-          spark.sql.warehouse.dir: alluxio:///${SPARK_WAREHOUSE}
           spark.hadoop.hive.metastore.uris: thrift://${SCHEMA_SVC}
           spark.eventLog.enabled: true
-          spark.eventLog.dir: alluxio:///${SPARK_EVENTLOG_DIR}
           spark.sql.sequoiadp.metaservice.uri: ${METADATA_SVC}
       fullnameOverride: ${ZEPPELIN_SERVICE_NAME}
       serviceAccount:
