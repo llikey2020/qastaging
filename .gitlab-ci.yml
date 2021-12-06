@@ -8,8 +8,8 @@ workflow:
     - if: '$CI_COMMIT_MESSAGE =~ /-draft$/'
       when: never
 
-  #  - if: '$CI_COMMIT_BRANCH == "alluxio-removal"'
-  #    when: never
+    - if: '$CI_COMMIT_BRANCH == "alluxio-removal"'
+      when: never
 # ------remove after 
 .environment:
   environment: testing
