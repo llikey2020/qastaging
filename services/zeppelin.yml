@@ -41,7 +41,6 @@ Zeppelin helm prepare:
         submitConfOptions:
           spark.hadoop.hive.metastore.uris: thrift://${SCHEMA_SVC}
           spark.eventLog.enabled: true
-          spark.eventLog.dir: alluxio:///${SPARK_EVENTLOG_DIR}
           spark.sql.sequoiadp.metaservice.uri: ${METADATA_SVC}
       fullnameOverride: ${ZEPPELIN_SERVICE_NAME}
       serviceAccount:
