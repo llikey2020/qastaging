@@ -17,10 +17,6 @@ History server helm prepare:
     - !reference [".helm-prepare", "script"]
     - |
       cat << EOF > ${OVERRIDES_FILE}
-      #------------- eventLog:
-      #   alluxioService: ${ALLUXIO_MASTER_SERVICE}
-      #   alluxioRpcPort: ${ALLUXIO_RPC_PORT}
-      #   dir: ${SPARK_EVENTLOG_DIR}
       imagePullSecrets:
         - name: ${PULL_SECRET}
       image:
