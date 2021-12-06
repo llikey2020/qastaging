@@ -5,8 +5,8 @@ workflow:
   rules:
     - if: $CI_COMMIT_TAG
   #  - if: '$CI_COMMIT_BRANCH'
-    - if: '$CI_COMMIT_BRANCH == "alluxio-removal"'
-      when: never
+  #  - if: '$CI_COMMIT_BRANCH == "alluxio-removal"'
+  #    when: never
 # remove after 
 .environment:
   environment: testing
