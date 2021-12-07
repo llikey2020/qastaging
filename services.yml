@@ -6,6 +6,7 @@ stages:
   - cleanup
 
 include:
+  - services/alluxio.yml
   - services/batch-job.yml
   - services/frontend.yml
   - services/history.yml
@@ -144,6 +145,9 @@ Cleanup services:
   variables:
     TIMEOUT: "60"
   script:
+    - kubectl exec ${ALLUXIO_SVC} -c alluxio-master -- alluxio fs rm -RU /${SPARK_WAREHOUSE} || true
+    - kubectl exec ${ALLUXIO_SVC} -c alluxio-master -- alluxio fs rm -RU /${SPARK_DEPENDENCY_DIR} || true
+    - helm uninstall ${ALLUXIO_SERVICE_NAME} alluxio-charts/alluxio || true
     - kubectl delete pod ${SPARK_DRIVER_POD_NAME} --ignore-not-found=true
     - kubectl delete service/${MYSQL_SERVICE_NAME} deployment/${MYSQL_SERVICE_NAME} || true
     - helm uninstall ${ZEPPELIN_SERVICE_NAME} || true

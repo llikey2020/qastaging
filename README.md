@@ -1,6 +1,5 @@
 # SequoiaDP staging environment project
 
-
 ## Overview
 
 The staging pipeline is used to deploy SequoiaDP services in our staging environment, and consists of several stages. The prepare stage downloads the packaged Helm charts for each service from their respective GitLab project's package repository, and Helm values are customized for the services in the form of a generated override file. This file is used when running `helm upgrade --install ...` in the deploy stage.

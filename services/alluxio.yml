@@ -1,0 +1,75 @@
+variables:
+  ALLUXIO_SERVICE_NAME: alluxio
+  ALLUXIO_RPC_PORT: 19998
+  # ALLUXIO_MASTER_SERVICE: ${ALLUXIO_SERVICE_NAME}-master-0
+  ALLUXIO_MASTER_SERVICE: alluxio-master-0
+  # ALLUXIO_SVC: ${ALLUXIO_MASTER_SERVICE}:${ALLUXIO_RPC_PORT}
+  ALLUXIO_SVC: alluxio-master-0:19998
+  ALLUXIO_PROJECT_ID: 53
+  ALLUXIO_PROXY_NAME: alluxio-proxy
+
+Alluxio helm prepare:
+  extends:
+    - .helm-prepare
+  rules:
+    - if: '($DEPLOY_PROJECT =~ /alluxio/ || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
+  variables:
+    SERVICE_NAME: ${ALLUXIO_SERVICE_NAME}
+    PACKAGE_NAME: alluxio-helm-chart
+    FILE_NAME: alluxio-0.6.22.tgz
+    PACKAGE_VERSION: "0.6.22"
+    ID: ${ALLUXIO_PROJECT_ID}
+  script:
+    - !reference [".helm-prepare", "script"]
+    - |
+      cat << EOF > ${OVERRIDES_FILE}
+        properties:
+          alluxio.master.mount.table.root.ufs: ${ALLUXIO_UFS}
+          alluxio.master.mount.table.root.option.aws.accessKeyId: ${AWS_S3_ACCESS_KEY_ID}
+          alluxio.master.mount.table.root.option.aws.secretKey: ${AWS_S3_SECRET_ACCESS_KEY}
+          alluxio.underfs.s3.default.mode: 777
+          alluxio.underfs.s3.inherit.acl: false
+          alluxio.security.authentication.type: NOSASL
+          alluxio.security.authorization.permission.enabled: false
+        journal:
+          format:
+            runFormat: "true"
+          type: UFS
+          ufsType: local
+          folder: /journal
+          size: 1Gi
+          volumeType: emptyDir
+          medium: ""
+        master:
+          count: 1
+          resources:
+            requests:
+              cpu: 200m
+              memory: 200Mi
+        jobMaster:
+          resources:
+            requests:
+              cpu: 200m
+              memory: 200Mi
+        worker:
+          resources:
+            requests:
+              cpu: 200m
+              memory: 200Mi
+        jobWorker:
+          resources:
+            requests:
+              cpu: 200m
+              memory: 200Mi
+        shortCircuit:
+          enabled: false
+        tieredstore:
+          levels:
+            - level: 0
+              alias: SSD
+              mediumtype: SSD
+              path: /ssd
+              name: alluxio-ssd
+              quota: ${CACHE_SSD_SIZE}
+              type: emptyDir
+      EOF
