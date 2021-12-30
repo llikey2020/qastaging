@@ -2,13 +2,15 @@
 
 ## Overview
 
-The staging pipeline is used to deploy SequoiaDP services in our staging environment, and consists of several stages. The prepare stage downloads the packaged Helm charts for each service from their respective GitLab project's package repository, and Helm values are customized for the services in the form of a generated override file. This file is used when running `helm upgrade --install ...` in the deploy stage.
+The staging pipeline is used to deploy SequoiaDP services in our staging environment, and consists of several stages. The prepare stage downloads the packaged Helm charts for each service from their respective GitLab project's package repository, and Helm values are customized for the services in the form of a generated `overrides.yml` file. This file is used when running `helm upgrade --install ...` in the deploy stage.
 
 ## Deploying services
 
-To deploy a service, trigger the staging pipeline through the CI/CD > Pipelines page in the staging project, via the 'Run Pipeline' button. The specific service to deploy can be specified using the DEPLOY_PROJECT variable. Multiple services to deploy can be specified as a comma separated list, or the variable can be set to 'all' to redeploy every service. See the DEPLOY_PROJECT variable description on the 'Run Pipeline' page for the various service name options.
+To deploy a service, trigger the staging pipeline through the CI/CD > Pipelines page in the staging project, via the 'Run Pipeline' button. The specific service to deploy can be specified using the DEPLOY_PROJECT variable. Multiple services to deploy can be specified as a **comma separated list**, or the variable can be set to 'all' to redeploy every service. See the DEPLOY_PROJECT variable description on the 'Run Pipeline' page for the various service name options.
 
 If the service was already present in the staging environment, triggering the pipeline will only successfully redeploy the service if the commit SHA of the latest master commit has changed for that service's project, or if helm chart for the service has been modified. Otherwise, the previously deployed version of the service will remain unchanged.
+
+You can also specify the specific commit for the service image, by setting the relevan image tag variable to the specific commit SHA, e.g. setting `BATCH_JOB_IMAGE_TAG` as `6c6275218a4781d197ab02c6ecfa5259838d7d26`.
 
 Deployed services pull docker images using the `docker-login` kubernetes secret present in the staging environment.
 
@@ -30,7 +32,9 @@ Currently, the following services trigger a downstream pipeline in Staging:
 
 - Metadata Service
 
-This pipeline deploys a separate test version of the service in the staging environment, as well as a separate test version of the MySQL service if needed. It then verifies that the newly deployed service's pods start running successfully. This test version does not affect the services normally deployed in staging, and is based on the version of the helm chart and docker image created by the specific upstream commit that triggered this downstream deploy.
+This pipeline deploys a separate test version of the service in the staging environment, as well as a separate test version of the MySQL service if needed. It then verifies that the newly deployed service's pods start running successfully. This test version does **not** affect the services normally deployed in staging, and is based on the version of the helm chart and docker image created by the specific upstream commit that triggered this downstream deploy.
+
+Downstream pipelines may be implemented for more services in the future. Note that CI pipelines cannot be run simultaneously in the Staging environment, so be careful to avoid conflicts between developers using the Staging environment at the same time.
 
 ## Cleaning up services
 
