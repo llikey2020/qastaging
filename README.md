@@ -10,7 +10,7 @@ To deploy a service, trigger the staging pipeline through the CI/CD > Pipelines 
 
 If the service was already present in the staging environment, triggering the pipeline will only successfully redeploy the service if the commit SHA of the latest master commit has changed for that service's project, or if helm chart for the service has been modified. Otherwise, the previously deployed version of the service will remain unchanged.
 
-You can also specify the specific commit for the service image, by setting the relevan image tag variable to the specific commit SHA, e.g. setting `BATCH_JOB_IMAGE_TAG` as `6c6275218a4781d197ab02c6ecfa5259838d7d26`.
+You can also specify the specific commit for the service image, by setting the relevant image tag variable to the specific commit SHA, e.g. setting `BATCH_JOB_IMAGE_TAG` as `6c6275218a4781d197ab02c6ecfa5259838d7d26`.
 
 Deployed services pull docker images using the `docker-login` kubernetes secret present in the staging environment.
 
