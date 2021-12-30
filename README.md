@@ -12,7 +12,7 @@ If the service was already present in the staging environment, triggering the pi
 
 You can also specify the specific commit for the service image, by setting the relevant image tag variable to the specific commit SHA, e.g. setting `BATCH_JOB_IMAGE_TAG` as `6c6275218a4781d197ab02c6ecfa5259838d7d26`.
 
-Deployed services pull docker images using the `docker-login` kubernetes secret present in the staging environment.
+Deployed services pull docker images using the `docker-login` kubernetes secret present in the staging environment. Services can be connected to using the service name and port, which can be found in the `services/*.yml` file for each service.
 
 ## Verifying services are running
 
