@@ -33,9 +33,14 @@ Batch job helm prepare:
           spark.sql.extensions:                                    io.delta.sql.DeltaSparkSessionExtension
           spark.sql.catalog.spark_catalog:                         org.apache.spark.sql.delta.catalog.DeltaCatalog
           spark.delta.logStore.class:                              org.apache.spark.sql.delta.storage.LocalLogStore
-          spark.sql.warehouse.dir:                                 alluxio://${ALLUXIO_SVC}/${SPARK_WAREHOUSE}
+          #spark.sql.warehouse.dir:                                 alluxio://${ALLUXIO_SVC}/${SPARK_WAREHOUSE}
           spark.eventLog.enabled:                                  "true"
-          spark.eventLog.dir:                                      alluxio://${ALLUXIO_SVC}/${SPARK_EVENTLOG_DIR}
+          #spark.eventLog.dir:                                      alluxio://${ALLUXIO_SVC}/${SPARK_EVENTLOG_DIR}
+          spark.hadoopfs.s3a.impl:                                 org.apache.hadoop.fs.s3a.S3AFileSystem
+          spark.hadoopfs.s3a.access.key:                           ABCDEFGHIJKLMNOPQRST
+          spark.hadoopfs.s3a.secret.key:                           abcdefghijklmnopqrstuvwxyz0123456789ABCD
+          spark.hadoopfs.s3a.connection.ssl.enabled:               false
+          spark.hadoopfs.s3a.endpoint:                             192.168.6.97:8002
         driver:
           javaOptions: -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
         executor:
