@@ -39,6 +39,7 @@ Zeppelin helm prepare:
         repository: ${REGISTRY}/${SPARK_PROJECT}:${SPARK_IMAGE_TAG}
         imagePullSecret: ${PULL_SECRET}
         submitConfOptions:
+          spark.jars: /spark/jars/spark-sequoiadb_3.0-3.2.0-SNAPSHOT.jar,/spark/jars/sequoiadb-driver-5.0.2.jar,/spark/jars/hadoop-aws-3.2.0.jar,/spark/jars/aws-java-sdk-bundle-1.11.375.jar
           spark.driver.extraJavaOptions: '-Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}'
           spark.executor.extraJavaOptions: '-Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}'
           spark.sql.warehouse.dir: alluxio:///${SPARK_WAREHOUSE}
