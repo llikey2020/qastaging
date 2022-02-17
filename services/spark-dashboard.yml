@@ -17,4 +17,8 @@ Spark dashboard helm prepare:
     - !reference [".helm-prepare", "script"]
     - |
       cat << EOF > ${OVERRIDES_FILE}
+      grafana:
+        image: "${CONTAINER_REGISTRY}grafana/grafana:7.5.4"
+      influxdb:
+        image: "${CONTAINER_REGISTRY}influxdb:1.8.4"
       EOF

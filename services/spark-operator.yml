@@ -18,4 +18,8 @@ Spark operator helm prepare:
     - |
       cat << EOF > ${OVERRIDES_FILE}
       sparkJobNamespace: ${SERVICE_NAMESPACE}
+      image:
+        repository: ${CONTAINER_REGISTRY}gcr.io/spark-operator/spark-operator
+        pullPolicy: IfNotPresent
+        tag: "latest"
       EOF

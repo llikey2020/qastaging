@@ -23,6 +23,9 @@ Alluxio helm prepare:
     - !reference [".helm-prepare", "script"]
     - |
       cat << EOF > ${OVERRIDES_FILE}
+        image: ${CONTAINER_REGISTRY}alluxio/alluxio
+        imageTag: 2.6.0
+        imagePullPolicy: IfNotPresent
         properties:
           alluxio.master.mount.table.root.ufs: ${ALLUXIO_UFS}
           alluxio.master.mount.table.root.option.aws.accessKeyId: ${AWS_S3_ACCESS_KEY_ID}
