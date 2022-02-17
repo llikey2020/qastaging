@@ -51,4 +51,8 @@ Zeppelin helm prepare:
       serviceAccount:
         create: false
         name: ${SPARK_SERVICE_ACCOUNT}
+      nginx:
+        repository: ${CONTAINER_REGISTRY}nginx:1.14.0
+      dnsmasq:
+        repository: ${CONTAINER_REGISTRY}janeczku/go-dnsmasq:release-1.0.5
       EOF
