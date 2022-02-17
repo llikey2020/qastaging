@@ -51,4 +51,6 @@ Zeppelin helm prepare:
       serviceAccount:
         create: false
         name: ${SPARK_SERVICE_ACCOUNT}
+      nginx:
+        repository: ${CONTAINER_REGISTRY}nginx:1.14.0
       EOF
