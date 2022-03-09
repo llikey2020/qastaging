@@ -42,7 +42,7 @@ History server helm prepare:
             spark.eventLog.enabled:        true
             spark.history.fs.logDirectory: "alluxio://${ALLUXIO_MASTER_SERVICE}:${ALLUXIO_RPC_PORT}/${SPARK_EVENTLOG_DIR}/"
             spark.eventLog.dir:            "alluxio://${ALLUXIO_MASTER_SERVICE}:${ALLUXIO_RPC_PORT}/${SPARK_EVENTLOG_DIR}/"
-        EOF
+      EOF
       else
         cat << EOF >> ${OVERRIDES_FILE}
         eventLog:
