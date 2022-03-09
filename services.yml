@@ -159,8 +159,16 @@ Cleanup services:
     - helm uninstall ${SPARK_OPERATOR_SERVICE_NAME} || true
     - helm uninstall ${SPARK_DASHBOARD_SERVICE_NAME} || true
     - kubectl delete secret ${PULL_SECRET} --ignore-not-found=true
-    - echo "Waiting for resources to cleanup..."
     - |
+      if [[ $(kubectl get pods --no-headers | wc -l) -gt 0 ]]
+      then
+        for p in `kubectl get pods | awk '{print $1}'`
+        do
+          kubectl delete pod $p
+        done
+      fi
+
+      echo "Waiting for resources to cleanup..."
       while [[ $(kubectl get pods --no-headers | wc -l) -gt 0 ]] &&
             [[ $(kubectl get services --no-headers | wc -l) -gt 0 ]]
       do
@@ -172,11 +180,3 @@ Cleanup services:
         TIMEOUT=$((TIMEOUT-1))
         sleep 1
       done
-      
-      if [[ $(kubectl get pods --no-headers | wc -l) -gt 0 ]]
-      then
-        for p in `kubectl get pods | awk '{print $1}'` 
-        do
-          kubectl delete pod $p
-        done
-      fi
