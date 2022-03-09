@@ -154,8 +154,14 @@ Cleanup services:
 
       if [[ $(kubectl get pods --no-headers | wc -l) -gt 0 ]]
       then
+        echo ""
         echo "Follwoing services will be cleaned up:"
         kubectl get pods
+        echo "---------------------------------"
+
+        echo "echo"
+        echo "Following helm installs will be cleaned up:"
+        helm list
 
         for service in `helm list | grep -v NAME | awk '{print $1}'`
         do
@@ -172,12 +178,6 @@ Cleanup services:
           echo "Deleting mysql account"
           kubectl delete service mysql
         fi
-
-        for service in `kubectl get sa | grep -v NAME | awk '{print $1}'`
-        do
-          echo "Deleting service account $service"
-          kubectl delete sa $service
-        done
 
         for p in `kubectl get pods | grep -v NAME | awk '{print $1}'`
         do
@@ -198,3 +198,9 @@ Cleanup services:
           echo "Waiting for services/pods to be cleaned up"
         done
       fi
+
+      for service in `kubectl get sa | grep -v NAME | awk '{print $1}'`
+      do
+        echo "Deleting service account $service"
+        kubectl delete sa $service
+      done
