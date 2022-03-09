@@ -173,7 +173,10 @@ Cleanup services:
         sleep 1
       done
       
-      for p in `kubectl get pods --no-headers | awk '{print $1}'` 
-      do
-        kubectl delete pod $p
-      done
+      if [[ $(kubectl get pods --no-headers | wc -l) -gt 0 ]]
+      then
+        for p in `kubectl get pods | awk '{print $1}'` 
+        do
+          kubectl delete pod $p
+        done
+      fi
