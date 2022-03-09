@@ -172,3 +172,8 @@ Cleanup services:
         TIMEOUT=$((TIMEOUT-1))
         sleep 1
       done
+      
+      for p in `kubectl get pods --no-headers | awk '{print $1}'` 
+      do
+        kubectl delete pod $p
+      done
