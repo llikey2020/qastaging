@@ -1,12 +1,21 @@
-default:
-  tags: ["kubernetes"]
-
 workflow:
   rules:
     - if: $CI_COMMIT_TAG
     - if: '$CI_COMMIT_BRANCH'
 
+variables:
+  TAG:
+    value: k8s-cluster-2
+    description: k8s-cluster-2 tags
+
+  ENV_NAME:
+    value: k8s-cluster-2
+    description: cluster environment, k8s-cluster-2
+
+default:
+  tags: [$TAG]
+
 .environment:
-  environment: testing
+  environment: $ENV_NAME
 
 include: staging.yml
