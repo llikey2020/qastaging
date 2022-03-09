@@ -13,6 +13,7 @@ Spark operator helm prepare:
     FILE_NAME: spark-operator-1.1.6.tgz
     PACKAGE_VERSION: "1.1.6"
     ID: ${SPARK_OPERATOR_PROJECT_ID}
+    SPARK_OPERATOR_IMAGE_TAG: "v1beta2-1.2.3-3.1.1"
   script:
     - !reference [".helm-prepare", "script"]
     - |
@@ -20,6 +21,6 @@ Spark operator helm prepare:
       sparkJobNamespace: ${SERVICE_NAMESPACE}
       image:
         repository: ${CONTAINER_REGISTRY}gcr.io/spark-operator/spark-operator
+        tag: ${SPARK_OPERATOR_IMAGE_TAG}
         pullPolicy: IfNotPresent
-        tag: "latest"
       EOF

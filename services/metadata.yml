@@ -20,7 +20,7 @@ Metadata helm prepare:
       cat << EOF > ${OVERRIDES_FILE}
       image:
         registry: ${REGISTRY}/sequoiadp/metadata_service:${METADATA_IMAGE_TAG}
-        pullPolicy: Always
+        pullPolicy: IfNotPresent
       imagePullSecrets:
         - name: ${PULL_SECRET}
       mysql:
