@@ -65,3 +65,5 @@ Batch job helm prepare:
             spark.history.fs.logDirectory:  "s3a://${S3A_BUCKET_NAME}/${SPARK_EVENTLOG_DIR}/"
       EOF
       fi
+      
+      cat ${OVERRIDES_FILE}
