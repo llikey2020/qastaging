@@ -145,39 +145,56 @@ Cleanup services:
   variables:
     TIMEOUT: "60"
   script:
-    - kubectl exec ${ALLUXIO_SVC} -c alluxio-master -- alluxio fs rm -RU /${SPARK_WAREHOUSE} || true
-    - kubectl exec ${ALLUXIO_SVC} -c alluxio-master -- alluxio fs rm -RU /${SPARK_DEPENDENCY_DIR} || true
-    - helm uninstall ${ALLUXIO_SERVICE_NAME} alluxio-charts/alluxio || true
-    - kubectl delete pod ${SPARK_DRIVER_POD_NAME} --ignore-not-found=true
-    - kubectl delete service/${MYSQL_SERVICE_NAME} deployment/${MYSQL_SERVICE_NAME} || true
-    - helm uninstall ${ZEPPELIN_SERVICE_NAME} || true
-    - helm uninstall ${SCHEMA_SERVICE_NAME} || true
-    - helm uninstall ${METADATA_SERVICE_NAME} || true
-    - helm uninstall ${HISTORY_SERVICE_NAME} || true
-    - helm uninstall ${FRONTEND_SERVICE_NAME} || true
-    - helm uninstall ${BATCH_JOB_SERVICE_NAME} || true
-    - helm uninstall ${SPARK_OPERATOR_SERVICE_NAME} || true
-    - helm uninstall ${SPARK_DASHBOARD_SERVICE_NAME} || true
-    - kubectl delete secret ${PULL_SECRET} --ignore-not-found=true
     - |
-      echo "Waiting for resources to cleanup..."
-      if [[ $(kubectl get pods --no-headers | wc -l) -gt 0 ]]
+      if [[ ${ALLUXIO_ENABLED} -eq 1 ]]
       then
-        for p in `kubectl get pods --no-headers | awk '{print $1}'`
-        do
-          kubectl delete pod $p
-        done
+        kubectl exec ${ALLUXIO_SVC} -c alluxio-master -- alluxio fs rm -RU /${SPARK_WAREHOUSE} || true
+        kubectl exec ${ALLUXIO_SVC} -c alluxio-master -- alluxio fs rm -RU /${SPARK_DEPENDENCY_DIR} || true
       fi
 
-      while [[ $(kubectl get pods --no-headers | wc -l) -gt 0 ]] &&
-            [[ $(kubectl get services --no-headers | wc -l) -gt 0 ]]
-      do
-        if [[ ${TIMEOUT} -le 0 ]]
+      if [[ $(kubectl get pods --no-headers | wc -l) -gt 0 ]]
+      then
+        echo "Follwoing services will be cleaned up:"
+        kubectl get pods
+
+        for service in `helm list | grep -v NAME | awk '{print $1}'`
+        do
+          echo "Uninstalling $service..."
+          helm uninstall ${service}
+        done
+
+        kubectl get pod mysql -n n1  2>1 /dev/null
+        if [[ $? -eq 0 ]]
         then
-          echo "Timed out waiting for resources to cleanup"
-          exit 1
+          echo "Deleting mysql deployment"
+          kubectl delete deployment mysql
+
+          echo "Deleting mysql account"
+          kubectl delete service mysql
         fi
-        TIMEOUT=$((TIMEOUT-1))
-        sleep 1
-        echo "Waiting for services/pods to be cleaned up"
-      done
+
+        for service in `kubectl get sa | grep -v NAME | awk '{print $1}'`
+        do
+          echo "Deleting service account $service"
+          kubectl delete sa $service
+        done
+
+        for p in `kubectl get pods | grep -v NAME | awk '{print $1}'`
+        do
+          print_log "deleting pod $p"
+          kubectl delete pod $p
+        done
+
+        while [[ $(kubectl get pods --no-headers | wc -l) -gt 0 ]] &&
+              [[ $(kubectl get services --no-headers | wc -l) -gt 0 ]]
+        do
+          if [[ ${TIMEOUT} -le 0 ]]
+          then
+            echo "Timed out waiting for resources to cleanup"
+            exit 1
+          fi
+          TIMEOUT=$((TIMEOUT-1))
+          sleep 1
+          echo "Waiting for services/pods to be cleaned up"
+        done
+      fi
