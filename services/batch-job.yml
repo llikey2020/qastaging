@@ -45,16 +45,16 @@ Batch job helm prepare:
       EOF
       if [[ ${ALLUXIO_ENABLED} -eq 1 ]]
       then
-      cat << EOF >> ${OVERRIDES_FILE}
-          spark.sql.warehouse.dir: "alluxio://${ALLUXIO_SVC}/${SPARK_WAREHOUSE}/"
-          spark.eventLog.dir:      "alluxio://${ALLUXIO_SVC}/${SPARK_EVENTLOG_DIR}/"
-        driver:
-          javaOptions: -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
-        executor:
-          javaOptions: -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
-      EOF
+        cat << EOF >> ${OVERRIDES_FILE}
+            spark.sql.warehouse.dir: "alluxio://${ALLUXIO_SVC}/${SPARK_WAREHOUSE}/"
+            spark.eventLog.dir:      "alluxio://${ALLUXIO_SVC}/${SPARK_EVENTLOG_DIR}/"
+          driver:
+            javaOptions: -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
+          executor:
+            javaOptions: -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
+        EOF
       else
-      cat << EOF >> ${OVERRIDES_FILE}
+        cat << EOF >> ${OVERRIDES_FILE}
             spark.hadoop.fs.s3a.connection.ssl.enabled: false
             spark.hadoop.fs.s3a.impl:       org.apache.hadoop.fs.s3a.S3AFileSystem
             spark.hadoop.fs.s3a.endpoint:   ${S3A_ENDPOINT}
@@ -63,7 +63,7 @@ Batch job helm prepare:
             spark.sql.warehouse.dir:        "s3a://${S3A_BUCKET_NAME}/${SPARK_WAREHOUSE}/"
             spark.eventLog.dir:             "s3a://${S3A_BUCKET_NAME}/${SPARK_EVENTLOG_DIR}/"
             spark.history.fs.logDirectory:  "s3a://${S3A_BUCKET_NAME}/${SPARK_EVENTLOG_DIR}/"
-      EOF
+        EOF
       fi
       
       cat ${OVERRIDES_FILE}

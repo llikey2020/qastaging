@@ -27,22 +27,22 @@ History server helm prepare:
       EOF
       if [[ ${ALLUXIO_ENABLED} -eq 1 ]]
       then
-      cat << EOF >> ${OVERRIDES_FILE}
-      init:
-        mkdirIfNotExist: true
-        checkLogDir:
-          image:
-            repository: ${GITLAB_REGISTRY}/alluxio/alluxio
-            tag: ${ALLUXIO_IMAGE_TAG}
-            pullPolicy: IfNotPresent
-      eventLog:
-        alluxioService: ${ALLUXIO_MASTER_SERVICE}
-        dir: ${SPARK_EVENTLOG_DIR}
-        properties:
-          spark.eventLog.enabled:        true
-          spark.history.fs.logDirectory: "alluxio://${ALLUXIO_MASTER_SERVICE}:${ALLUXIO_RPC_PORT}/${SPARK_EVENTLOG_DIR}/"
-          spark.eventLog.dir:            "alluxio://${ALLUXIO_MASTER_SERVICE}:${ALLUXIO_RPC_PORT}/${SPARK_EVENTLOG_DIR}/"
-      EOF
+        cat << EOF >> ${OVERRIDES_FILE}
+        init:
+          mkdirIfNotExist: true
+          checkLogDir:
+            image:
+              repository: ${GITLAB_REGISTRY}/alluxio/alluxio
+              tag: ${ALLUXIO_IMAGE_TAG}
+              pullPolicy: IfNotPresent
+        eventLog:
+          alluxioService: ${ALLUXIO_MASTER_SERVICE}
+          dir: ${SPARK_EVENTLOG_DIR}
+          properties:
+            spark.eventLog.enabled:        true
+            spark.history.fs.logDirectory: "alluxio://${ALLUXIO_MASTER_SERVICE}:${ALLUXIO_RPC_PORT}/${SPARK_EVENTLOG_DIR}/"
+            spark.eventLog.dir:            "alluxio://${ALLUXIO_MASTER_SERVICE}:${ALLUXIO_RPC_PORT}/${SPARK_EVENTLOG_DIR}/"
+        EOF
       else
         cat << EOF >> ${OVERRIDES_FILE}
         eventLog:
@@ -58,3 +58,4 @@ History server helm prepare:
             spark.history.fs.logDirectory:              "s3a://${S3A_BUCKET_NAME}/${SPARK_EVENTLOG_DIR}/"
       EOF
       fi
+      cat ${OVERRIDES_FILE}
