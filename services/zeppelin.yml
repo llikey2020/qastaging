@@ -65,22 +65,22 @@ Zeppelin helm prepare:
       if [[ ${ALLUXIO_ENABLED} -eq 1 ]]
       then
         cat << EOF >> ${OVERRIDES_FILE}
-            spark.driver.extraJavaOptions:   '-Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}'
-            spark.executor.extraJavaOptions: '-Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}'
-            spark.sql.warehouse.dir:         "alluxio:///${SPARK_WAREHOUSE}"
-            spark.eventLog.dir:              "alluxio:///${SPARK_EVENTLOG_DIR}"
-        EOF
+          spark.driver.extraJavaOptions:   '-Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}'
+          spark.executor.extraJavaOptions: '-Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}'
+          spark.sql.warehouse.dir:         "alluxio:///${SPARK_WAREHOUSE}"
+          spark.eventLog.dir:              "alluxio:///${SPARK_EVENTLOG_DIR}"
+      EOF
       else
         cat << EOF >> ${OVERRIDES_FILE}
-            spark.history.provider:         org.apache.hadoop.fs.s3a.S3AFileSystem
-            spark.hadoop.fs.s3a.connection.ssl.enabled: false
-            spark.hadoop.fs.s3a.impl:       org.apache.hadoop.fs.s3a.S3AFileSystem
-            spark.hadoop.fs.s3a.endpoint:   ${S3A_ENDPOINT}
-            spark.hadoop.fs.s3a.access.key: ${S3A_ACCESS_KEY}
-            spark.hadoop.fs.s3a.secret.key: ${S3A_SECRET_KEY}
-            spark.sql.warehouse.dir:        "s3a://${S3A_BUCKET_NAME}/${SPARK_WAREHOUSE}"
-            spark.eventLog.dir:             "s3a://${S3A_BUCKET_NAME}/${SPARK_EVENTLOG_DIR}"
-            spark.history.fs.logDirectory:  "s3a://${S3A_BUCKET_NAME}/${SPARK_EVENTLOG_DIR}"
-        EOF
+          spark.history.provider:         org.apache.hadoop.fs.s3a.S3AFileSystem
+          spark.hadoop.fs.s3a.connection.ssl.enabled: false
+          spark.hadoop.fs.s3a.impl:       org.apache.hadoop.fs.s3a.S3AFileSystem
+          spark.hadoop.fs.s3a.endpoint:   ${S3A_ENDPOINT}
+          spark.hadoop.fs.s3a.access.key: ${S3A_ACCESS_KEY}
+          spark.hadoop.fs.s3a.secret.key: ${S3A_SECRET_KEY}
+          spark.sql.warehouse.dir:        "s3a://${S3A_BUCKET_NAME}/${SPARK_WAREHOUSE}"
+          spark.eventLog.dir:             "s3a://${S3A_BUCKET_NAME}/${SPARK_EVENTLOG_DIR}"
+          spark.history.fs.logDirectory:  "s3a://${S3A_BUCKET_NAME}/${SPARK_EVENTLOG_DIR}"
+      EOF
       fi
       cat ${OVERRIDES_FILE}
