@@ -20,7 +20,7 @@ include:
 variables:
   CHARTS_DIR: charts
   OVERRIDES_FILE: overrides.yml
-  SERVICE_NAMESPACE: mar-09-2022
+  SERVICE_NAMESPACE: staging-48-testing
 
 .generator:
   # extenders need to generate a file "deployment/${PROJECT}.yml"
