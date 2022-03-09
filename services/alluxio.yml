@@ -77,3 +77,5 @@ Alluxio helm prepare:
               quota: ${CACHE_SSD_SIZE}
               type: emptyDir
       EOF
+
+      cat ${OVERRIDES_FILE}
