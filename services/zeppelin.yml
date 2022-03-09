@@ -13,6 +13,8 @@ Zeppelin helm prepare:
     FILE_NAME: zeppelin-0.1.0.tgz
     PACKAGE_VERSION: "0.1.0"
     ID: ${ZEPPELIN_PROJECT_ID}
+    NGINX_IMAGE_TAG: "1.14.0"
+    DNSMASQ_IMAGE_TAG: "release-1.0.5"
   script:
     - !reference [".helm-prepare", "script"]
     - |
@@ -21,7 +23,7 @@ Zeppelin helm prepare:
         - name: ${PULL_SECRET}
       image:
         repository: ${REGISTRY}/sequoiadp/zeppelin:${ZEPPELIN_IMAGE_TAG}
-        pullPolicy: Always
+        pullPolicy: IfNotPresent
       backendServices:
          - name: METASTORE
            value: ${SCHEMA_SERVICE_NAME}
@@ -35,24 +37,49 @@ Zeppelin helm prepare:
            value: zeppelin-server #${ZEPPELIN_SERVICE_NAME}
          - name: ZEPPELIN_NAMESPACE
            value: ${SERVICE_NAMESPACE}
-      spark:
-        repository: ${REGISTRY}/${SPARK_PROJECT}:${SPARK_IMAGE_TAG}
-        imagePullSecret: ${PULL_SECRET}
-        submitConfOptions:
-          spark.jars: /spark/jars/spark-sequoiadb_3.0-3.2.0-SNAPSHOT.jar,/spark/jars/sequoiadb-driver-5.0.2.jar,/spark/jars/hadoop-aws-3.2.0.jar,/spark/jars/aws-java-sdk-bundle-1.11.375.jar
-          spark.driver.extraJavaOptions: '-Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}'
-          spark.executor.extraJavaOptions: '-Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}'
-          spark.sql.warehouse.dir: alluxio:///${SPARK_WAREHOUSE}
-          spark.hadoop.hive.metastore.uris: thrift://${SCHEMA_SVC}
-          spark.eventLog.enabled: true
-          spark.eventLog.dir: alluxio:///${SPARK_EVENTLOG_DIR}
-          spark.sql.sequoiadp.metaservice.uri: ${METADATA_SVC}
       fullnameOverride: ${ZEPPELIN_SERVICE_NAME}
       serviceAccount:
         create: false
         name: ${SPARK_SERVICE_ACCOUNT}
       nginx:
-        repository: ${CONTAINER_REGISTRY}nginx:1.14.0
+        repository: ${CONTAINER_REGISTRY}nginx:${NGINX_IMAGE_TAG}
+        pullPolicy: IfNotPresent
       dnsmasq:
-        repository: ${CONTAINER_REGISTRY}janeczku/go-dnsmasq:release-1.0.5
-      EOF
+        repository: ${CONTAINER_REGISTRY}janeczku/go-dnsmasq:${DNSMASQ_IMAGE_TAG}      
+        pullPolicy: IfNotPresent
+      spark:
+        repository: ${REGISTRY}/${SPARK_PROJECT}:${SPARK_IMAGE_TAG}
+        pullPolicy: IfNotPresent
+        imagePullSecret: ${PULL_SECRET}
+        submitConfOptions:
+          spark.kubernetes.container.image.pullPolicy: IfNotPresent
+          spark.jars:                                  /spark/jars/spark-sequoiadb_3.0-3.2.0-SNAPSHOT.jar,/spark/jars/sequoiadb-driver-5.0.2.jar,/spark/jars/hadoop-aws-3.2.0.jar,/spark/jars/aws-java-sdk-bundle-1.11.375.jar
+          spark.jars.ivy:                              /tmp/.ivy
+          spark.hadoop.hive.metastore.uris:            thrift://${SCHEMA_SVC}
+          spark.sql.sequoiadp.metaservice.uri:         ${METADATA_SVC}
+          spark.sql.extensions:                        io.delta.sql.DeltaSparkSessionExtension
+          spark.sql.catalog.spark_catalog:             org.apache.spark.sql.delta.catalog.DeltaCatalog
+          spark.delta.logStore.class:                  org.apache.spark.sql.delta.storage.LocalLogStore
+          spark.eventLog.enabled:                      true
+      EOF    
+      if [[ ${ALLUXIO_ENABLED} -eq 1 ]]
+      then
+        cat << EOF >> ${OVERRIDES_FILE}
+            spark.driver.extraJavaOptions:   '-Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}'
+            spark.executor.extraJavaOptions: '-Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}'
+            spark.sql.warehouse.dir:         "alluxio:///${SPARK_WAREHOUSE}"
+            spark.eventLog.dir:              "alluxio:///${SPARK_EVENTLOG_DIR}"
+        EOF
+      else
+        cat << EOF >> ${OVERRIDES_FILE}
+            spark.history.provider:         org.apache.hadoop.fs.s3a.S3AFileSystem
+            spark.hadoop.fs.s3a.connection.ssl.enabled: false
+            spark.hadoop.fs.s3a.impl:       org.apache.hadoop.fs.s3a.S3AFileSystem
+            spark.hadoop.fs.s3a.endpoint:   ${S3A_ENDPOINT}
+            spark.hadoop.fs.s3a.access.key: ${S3A_ACCESS_KEY}
+            spark.hadoop.fs.s3a.secret.key: ${S3A_SECRET_KEY}
+            spark.sql.warehouse.dir:        "s3a://${S3A_BUCKET_NAME}/${SPARK_WAREHOUSE}"
+            spark.eventLog.dir:             "s3a://${S3A_BUCKET_NAME}/${SPARK_EVENTLOG_DIR}"
+            spark.history.fs.logDirectory:  "s3a://${S3A_BUCKET_NAME}/${SPARK_EVENTLOG_DIR}"
+        EOF
+      fi

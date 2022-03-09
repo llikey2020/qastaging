@@ -13,6 +13,8 @@ Batch job helm prepare:
     FILE_NAME: batch-job-0.1.0.tgz
     PACKAGE_VERSION: "0.1.0"
     ID: ${BATCH_JOB_PROJECT_ID}
+    SPARK_WAREHOUSE: spark-warehouse
+    SPARK_EVENTLOG_DIR: spark-logs
   script:
     - !reference [".helm-prepare", "script"]
     - |
@@ -22,29 +24,44 @@ Batch job helm prepare:
       image:
         repository: ${REGISTRY}/sequoiadp/batch-job
         tag: ${BATCH_JOB_IMAGE_TAG}
-        pullPolicy: Always
+        pullPolicy: IfNotPresent
+      fullnameOverride: ${BATCH_JOB_SERVICE_NAME}
       sparkJob:
         namespace: ${SERVICE_NAMESPACE}
         image: ${REGISTRY}/${SPARK_PROJECT}:${SPARK_IMAGE_TAG}
         imagePullSecrets: 
           - name: ${PULL_SECRET}
+        imagePullPolicy: IfNotPresent
         sparkConf:
-          spark.jars:                                              /spark/jars/spark-sequoiadb_3.0-3.2.0-SNAPSHOT.jar,/spark/jars/sequoiadb-driver-5.0.2.jar,/spark/jars/hadoop-aws-3.2.0.jar,/spark/jars/aws-java-sdk-bundle-1.11.375.jar
-          spark.jars.ivy:                                          /tmp/.ivy
-          spark.sql.extensions:                                    io.delta.sql.DeltaSparkSessionExtension
-          spark.sql.catalog.spark_catalog:                         org.apache.spark.sql.delta.catalog.DeltaCatalog
-          spark.delta.logStore.class:                              org.apache.spark.sql.delta.storage.LocalLogStore
-          spark.sql.warehouse.dir:                                 alluxio://${ALLUXIO_SVC}/${SPARK_WAREHOUSE}
-          spark.eventLog.enabled:                                  "true"
-          spark.eventLog.dir:                                      alluxio://${ALLUXIO_SVC}/${SPARK_EVENTLOG_DIR}
-          spark.hadoopfs.s3a.impl:                                 org.apache.hadoop.fs.s3a.S3AFileSystem
-          spark.hadoopfs.s3a.access.key:                           ABCDEFGHIJKLMNOPQRST
-          spark.hadoopfs.s3a.secret.key:                           abcdefghijklmnopqrstuvwxyz0123456789ABCD
-          spark.hadoopfs.s3a.connection.ssl.enabled:               false
-          spark.hadoopfs.s3a.endpoint:                             192.168.6.97:8002
+          spark.kubernetes.container.image.pullPolicy: IfNotPresent
+          spark.jars:                                  /spark/jars/spark-sequoiadb_3.0-3.2.0-SNAPSHOT.jar,/spark/jars/sequoiadb-driver-5.0.2.jar,/spark/jars/hadoop-aws-3.2.0.jar,/spark/jars/aws-java-sdk-bundle-1.11.375.jar
+          spark.jars.ivy:                              /tmp/.ivy
+          spark.sql.extensions:                        io.delta.sql.DeltaSparkSessionExtension
+          spark.sql.catalog.spark_catalog:             org.apache.spark.sql.delta.catalog.DeltaCatalog
+          spark.delta.logStore.class:                  org.apache.spark.sql.delta.storage.LocalLogStore
+          spark.eventLog.enabled:                      true
+          spark.hadoop.hive.metastore.uris:            thrift://${SCHEMA_SVC}
+          spark.sql.sequoiadp.metaservice.uri:         ${METADATA_SVC}
+      EOF
+      if [[ ${ALLUXIO_ENABLED} -eq 1 ]]
+      then
+      cat << EOF >> ${OVERRIDES_FILE}
+          spark.sql.warehouse.dir: "alluxio://${ALLUXIO_SVC}/${SPARK_WAREHOUSE}/"
+          spark.eventLog.dir:      "alluxio://${ALLUXIO_SVC}/${SPARK_EVENTLOG_DIR}/"
         driver:
           javaOptions: -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
         executor:
           javaOptions: -Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}
-      fullnameOverride: ${BATCH_JOB_SERVICE_NAME}
       EOF
+      else
+      cat << EOF >> ${OVERRIDES_FILE}
+            spark.hadoop.fs.s3a.connection.ssl.enabled: false
+            spark.hadoop.fs.s3a.impl:       org.apache.hadoop.fs.s3a.S3AFileSystem
+            spark.hadoop.fs.s3a.endpoint:   ${S3A_ENDPOINT}
+            spark.hadoop.fs.s3a.access.key: ${S3A_ACCESS_KEY}
+            spark.hadoop.fs.s3a.secret.key: ${S3A_SECRET_KEY}
+            spark.sql.warehouse.dir:        "s3a://${S3A_BUCKET_NAME}/${SPARK_WAREHOUSE}/"
+            spark.eventLog.dir:             "s3a://${S3A_BUCKET_NAME}/${SPARK_EVENTLOG_DIR}/"
+            spark.history.fs.logDirectory:  "s3a://${S3A_BUCKET_NAME}/${SPARK_EVENTLOG_DIR}/"
+      EOF
+      fi
