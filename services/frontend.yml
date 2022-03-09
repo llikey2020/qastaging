@@ -46,3 +46,4 @@ Frontend helm prepare:
         - name: ${PULL_SECRET}
       fullnameOverride: ${FRONTEND_SERVICE_NAME}
       EOF
+      cat ${OVERRIDES_FILE}

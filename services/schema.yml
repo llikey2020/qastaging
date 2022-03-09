@@ -33,3 +33,4 @@ Schema helm prepare:
         mysqlPassword: ${MYSQL_ROOT_PASSWORD}
         initdbScriptsConfigMap: hive-metastore-mysql-init
       EOF
+      cat ${OVERRIDES_FILE}

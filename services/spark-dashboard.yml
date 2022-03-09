@@ -26,3 +26,4 @@ Spark dashboard helm prepare:
         image: "${CONTAINER_REGISTRY}influxdb:${INFLUXDB_IMAGE_TAG}"
         imagePullPolicy: IfNotPresent
       EOF
+      cat ${OVERRIDES_FILE}

@@ -29,6 +29,7 @@ Metadata helm prepare:
         mysqlUser: root
         mysqlPassword: ${MYSQL_ROOT_PASSWORD}
       EOF
+      cat ${OVERRIDES_FILE}
 
 Metadata helm prepare downstream:
   extends: Metadata helm prepare

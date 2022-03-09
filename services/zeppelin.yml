@@ -45,7 +45,7 @@ Zeppelin helm prepare:
         repository: ${CONTAINER_REGISTRY}nginx:${NGINX_IMAGE_TAG}
         pullPolicy: IfNotPresent
       dnsmasq:
-        repository: ${CONTAINER_REGISTRY}janeczku/go-dnsmasq:${DNSMASQ_IMAGE_TAG}      
+        repository: ${CONTAINER_REGISTRY}janeczku/go-dnsmasq:${DNSMASQ_IMAGE_TAG}
         pullPolicy: IfNotPresent
       spark:
         repository: ${REGISTRY}/${SPARK_PROJECT}:${SPARK_IMAGE_TAG}
@@ -61,7 +61,7 @@ Zeppelin helm prepare:
           spark.sql.catalog.spark_catalog:             org.apache.spark.sql.delta.catalog.DeltaCatalog
           spark.delta.logStore.class:                  org.apache.spark.sql.delta.storage.LocalLogStore
           spark.eventLog.enabled:                      true
-      EOF    
+      EOF
       if [[ ${ALLUXIO_ENABLED} -eq 1 ]]
       then
         cat << EOF >> ${OVERRIDES_FILE}
@@ -83,3 +83,4 @@ Zeppelin helm prepare:
             spark.history.fs.logDirectory:  "s3a://${S3A_BUCKET_NAME}/${SPARK_EVENTLOG_DIR}"
         EOF
       fi
+      cat ${OVERRIDES_FILE}
