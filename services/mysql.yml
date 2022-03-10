@@ -26,7 +26,7 @@ variables:
               app: ${MYSQL_SERVICE_NAME}
           spec:
             containers:
-              - image: ${CONTAINER_REGISTRY}mysql:${MYSQL_VERSION}
+              - image: mysql:${MYSQL_VERSION}
                 name: ${MYSQL_SERVICE_NAME}
                 env:
                   - name: MYSQL_ROOT_PASSWORD

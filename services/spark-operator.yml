@@ -20,7 +20,7 @@ Spark operator helm prepare:
       cat << EOF > ${OVERRIDES_FILE}
       sparkJobNamespace: ${SERVICE_NAMESPACE}
       image:
-        repository: ${CONTAINER_REGISTRY}gcr.io/spark-operator/spark-operator
+        repository: gcr.io/spark-operator/spark-operator
         tag: ${SPARK_OPERATOR_IMAGE_TAG}
         pullPolicy: IfNotPresent
       EOF

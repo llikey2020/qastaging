@@ -20,10 +20,10 @@ Spark dashboard helm prepare:
     - |
       cat << EOF > ${OVERRIDES_FILE}
       grafana:
-        image: "${CONTAINER_REGISTRY}grafana/grafana:${GRAFANA_IMAGE_TAG}"
+        image: "grafana/grafana:${GRAFANA_IMAGE_TAG}"
         imagePullPolicy: IfNotPresent
       influxdb:
-        image: "${CONTAINER_REGISTRY}influxdb:${INFLUXDB_IMAGE_TAG}"
+        image: "influxdb:${INFLUXDB_IMAGE_TAG}"
         imagePullPolicy: IfNotPresent
       EOF
       cat ${OVERRIDES_FILE}

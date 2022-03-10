@@ -42,10 +42,10 @@ Zeppelin helm prepare:
         create: false
         name: ${SPARK_SERVICE_ACCOUNT}
       nginx:
-        repository: ${CONTAINER_REGISTRY}nginx:${NGINX_IMAGE_TAG}
+        repository: nginx:${NGINX_IMAGE_TAG}
         pullPolicy: IfNotPresent
       dnsmasq:
-        repository: ${CONTAINER_REGISTRY}janeczku/go-dnsmasq:${DNSMASQ_IMAGE_TAG}
+        repository: janeczku/go-dnsmasq:${DNSMASQ_IMAGE_TAG}
         pullPolicy: IfNotPresent
       spark:
         repository: ${REGISTRY}/${SPARK_PROJECT}:${SPARK_IMAGE_TAG}
