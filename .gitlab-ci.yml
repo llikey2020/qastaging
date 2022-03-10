@@ -7,6 +7,6 @@ default:
   tags: ["k8s-cluster-1"]
 
 .environment:
-  environment: "testing"
+  environment: "k8s-cluster-1"
 
 include: staging.yml
