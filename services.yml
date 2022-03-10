@@ -21,8 +21,8 @@ variables:
   CHARTS_DIR: charts
   OVERRIDES_FILE: overrides.yml
   #SERVICE_NAMESPACE: "${CI_PROJECT_NAME}-${CI_PROJECT_ID}-${ENV_NAME}"
-  SERVICE_NAMESPACE: "staging-48-testing"
-  KUBE_NAMESPACE: ${SERVICE_NAMESPACE}
+  SERVICE_NAMESPACE: ${KUBE_NAMESPACE}
+  
 
 .generator:
   # extenders need to generate a file "deployment/${PROJECT}.yml"
