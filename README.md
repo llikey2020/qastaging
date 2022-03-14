@@ -17,7 +17,7 @@ Deployed services pull docker images using the `docker-login` kubernetes secret 
 
 ## Verifying services are running
 
-### Deployed services can be accesed at: http://192.168.6.80:${SERVICE_PORT}
+### Deployed services can be accesed at: http://192.168.6.80:32499
 
 
 ### Downstream pipeline
