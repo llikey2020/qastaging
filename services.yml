@@ -107,6 +107,18 @@ Deploy resources:
     - .environment
   script:
     - |
+      if ! kubectl get sa spark
+      then
+        echo "Creating 'spark' service account"
+        kubectl apply -f - <<EOF
+        apiVersion: v1
+        kind: ServiceAccount
+        metadata:
+          name: spark
+          namespace: ${SERVICE_NAMESPACE}
+        EOF
+      fi
+
       if [ -d "${DEPLOYMENTS_DIR}/" ] 
       then
         echo "Deploying the following files"
