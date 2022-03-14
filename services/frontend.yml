@@ -38,6 +38,8 @@ Frontend helm prepare:
           value: ${ALLUXIO_PROXY_NAME}
         - name: ALLUXIO_PROXY_NAMESPACE
           value: ${SERVICE_NAMESPACE}
+        - name: SS3_BUCKET_NAME
+          value: ${S3A_BUCKET_NAME}
       image:
         registry: ${REGISTRY}
         dockerTag: ${FRONTEND_IMAGE_TAG}
@@ -45,5 +47,7 @@ Frontend helm prepare:
       imagePullSecrets:
         - name: ${PULL_SECRET}
       fullnameOverride: ${FRONTEND_SERVICE_NAME}
+      service:
+        nodePort: ${SERVICE_NODE_PORT}
       EOF
       cat ${OVERRIDES_FILE}

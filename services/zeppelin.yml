@@ -62,7 +62,7 @@ Zeppelin helm prepare:
           spark.delta.logStore.class:                  org.apache.spark.sql.delta.storage.LocalLogStore
           spark.eventLog.enabled:                      true
       EOF
-      if [[ ${ALLUXIO_ENABLED} -eq 1 ]]
+      if [[ ${ENABLE_ALLUXIO} -eq 1 ]]
       then
         cat << EOF >> ${OVERRIDES_FILE}
           spark.driver.extraJavaOptions:   '-Dalluxio.master.rpc.addresses=${ALLUXIO_SVC}'

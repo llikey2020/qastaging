@@ -20,9 +20,7 @@ include:
 variables:
   CHARTS_DIR: charts
   OVERRIDES_FILE: overrides.yml
-  #SERVICE_NAMESPACE: "${CI_PROJECT_NAME}-${CI_PROJECT_ID}-${ENV_NAME}"
-  SERVICE_NAMESPACE: ${KUBE_NAMESPACE}
-  
+  SERVICE_NAMESPACE: "${CI_PROJECT_NAME}-${CI_PROJECT_ID}-${ENV_NAME}"
 
 .generator:
   # extenders need to generate a file "deployment/${PROJECT}.yml"
@@ -126,13 +124,15 @@ Deploy helm charts:
     - .environment
   script:
     - |
+      ls -lRt ${CHARTS_DIR}/
       if [ -d "${CHARTS_DIR}/" ]
       then
         for SERVICE in $(ls ${CHARTS_DIR}) ; do
-          [[ ${ALLUXIO_ENABLED} -eq 0 ]] && [[ ${SERVICE} == "alluxio" ]] && continue
+          [[ ${ENABLE_ALLUXIO} -eq 0 ]] && [[ ${SERVICE} == "alluxio" ]] && continue
 
           echo "Installing/upgrading service ${SERVICE}..."
 
+          echo "helm upgrade --install --values ${CHARTS_DIR}/${SERVICE}/${OVERRIDES_FILE} ${SERVICE} ${CHARTS_DIR}/${SERVICE}/*.tgz"
           helm upgrade --install --values ${CHARTS_DIR}/${SERVICE}/${OVERRIDES_FILE} ${SERVICE} ${CHARTS_DIR}/${SERVICE}/*.tgz
         done
       else

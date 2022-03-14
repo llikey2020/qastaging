@@ -25,7 +25,7 @@ History server helm prepare:
         - name: ${PULL_SECRET}
       fullnameOverride: ${HISTORY_SERVICE_NAME}
       EOF
-      if [[ ${ALLUXIO_ENABLED} -eq 1 ]]
+      if [[ ${ENABLE_ALLUXIO} -eq 1 ]]
       then
       cat << EOF >> ${OVERRIDES_FILE}
       init:

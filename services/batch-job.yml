@@ -43,7 +43,7 @@ Batch job helm prepare:
           spark.hadoop.hive.metastore.uris:            thrift://${SCHEMA_SVC}
           spark.sql.sequoiadp.metaservice.uri:         ${METADATA_SVC}
       EOF
-      if [[ ${ALLUXIO_ENABLED} -eq 1 ]]
+      if [[ ${ENABLE_ALLUXIO} -eq 1 ]]
       then
         cat << EOF >> ${OVERRIDES_FILE}
           spark.sql.warehouse.dir: "alluxio://${ALLUXIO_SVC}/${SPARK_WAREHOUSE}/"

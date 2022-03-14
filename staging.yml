@@ -31,9 +31,9 @@ variables:
     value: "false"
     description: Skip cleanup when false, only run cleanup when true
   ALLUXIO_VERSION: 2.6.0
-  ALLUXIO_ENABLED:
+  ENABLE_ALLUXIO:
     value: 0
-    description: set to 1 to deploy Alluxio file storage
+    description: set to 1 to support Alluxio file storage
   BATCH_JOB_IMAGE_TAG: latest
   FRONTEND_IMAGE_TAG: latest
   SCHEMA_IMAGE_TAG: latest
@@ -97,6 +97,8 @@ Setup environment:
         if [ ${!IMAGE_TAG} = "latest" ]
         then
           echo "${IMAGE_TAG}=$(curl --header "PRIVATE-TOKEN: ${CI_API_TOKEN}" "${CI_API_V4_URL}/projects/${!PROJECT_ID}/repository/commits/master" | jq -r '.id')" >> staging.env
+        else
+          echo "${IMAGE_TAG}=${!IMAGE_TAG}" >> staging.env
         fi
       done
   after_script:
