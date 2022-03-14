@@ -23,7 +23,8 @@ Rbac helm prepare:
           registry: ${REGISTRY}/sequoiadp/authorization-service:${RBAC_IMAGE_TAG}
           pullPolicy: Always
         
-        imagePullSecrets: []
+        imagePullSecrets:
+          - name: ${PULL_SECRET}
         
         fullnameOverride: ""
         
