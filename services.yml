@@ -178,4 +178,4 @@ Cleanup services:
         TIMEOUT=$((TIMEOUT-1))
         sleep 1
       done
-      # kubectl delete secret ${PULL_SECRET} --ignore-not-found=true
+      kubectl delete secret ${PULL_SECRET} --ignore-not-found=true
