@@ -14,17 +14,11 @@ You can also specify the specific commit for the service image, by setting the r
 
 Deployed services pull docker images using the `docker-login` kubernetes secret present in the staging environment. Services can be connected to using the service name and port, which can be found in the `services/*.yml` file for each service.
 
+
 ## Verifying services are running
 
-### Manual
+### Deployed services can be accesed at: http://192.168.6.80:${SERVICE_PORT}
 
-You can verify that a service is running by manually running a port forward from the pod in the staging environment. First, set your $KUBE_CONFIG to point to our Kubernetes cluster. Next, run the following:
-
-```
-kubectl port-forward --namespace staging-48-testing --address 0.0.0.0 <pod-name> <local-port>:<pod-port>
-```
-
-You can then check the service's UI through `localhost:<local-port>`. For example, if you run `kubectl port-forward --namespace staging-48-testing --address 0.0.0.0 frontend-5966cddd84-mxzsd 8080:80`, you can see the SequoiaDP UI at `localhost:8080`. 
 
 ### Downstream pipeline
 
