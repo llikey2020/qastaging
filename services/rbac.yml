@@ -1,0 +1,36 @@
+variables:
+  RBAC_SERVICE_NAME: rbac
+  RBAC_PROJECT_ID: 73
+
+Rbac helm prepare:
+  extends:
+    - .helm-prepare
+  rules:
+    - if: '($DEPLOY_PROJECT =~ /rbac/ || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
+  variables:
+    SERVICE_NAME: ${RBAC_SERVICE_NAME}
+    PACKAGE_NAME: rbac-helm-chart
+    FILE_NAME: rbac-0.1.0.tgz
+    PACKAGE_VERSION: "0.1.0"
+    ID: ${RBAC_PROJECT_ID}
+  script:
+    - !reference [".helm-prepare", "script"]
+    - |
+      cat << EOF > ${OVERRIDES_FILE}
+        replicaCount: 1
+        
+        image:
+          registry: ${REGISTRY}/sequoiadp/authorization-service:${RBAC_IMAGE_TAG}
+          pullPolicy: Always
+        
+        imagePullSecrets: []
+        
+        fullnameOverride: ""
+        
+        instanceOwner: spark
+        
+        database:
+          dbURI: mysql:3306
+          dbUser: root
+          dbPassword: ${MYSQL_ROOT_PASSWORD}
+      EOF

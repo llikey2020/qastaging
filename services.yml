@@ -16,6 +16,7 @@ include:
   - services/schema.yml
   - services/spark-dashboard.yml
   - services/zeppelin.yml
+  - services/rbac.yml
 
 variables:
   CHARTS_DIR: charts

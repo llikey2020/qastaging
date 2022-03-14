@@ -26,7 +26,7 @@ include:
 variables:
   DEPLOY_PROJECT:
     value: all
-    description: all, alluxio, batchJob, frontend, history, hive, metadata, mysql, schema, sparkDashboard, sparkOperator, zeppelin
+    description: all, alluxio, batchJob, frontend, history, hive, metadata, mysql, schema, sparkDashboard, sparkOperator, zeppelin, rbac
   ONLY_CLEANUP: 
     value: "false"
     description: Skip cleanup when false, only run cleanup when true
@@ -40,6 +40,7 @@ variables:
   SPARK_IMAGE_TAG: latest
   ZEPPELIN_IMAGE_TAG: latest
   METADATA_IMAGE_TAG: latest
+  RBAC_IMAGE_TAG: latest
   SPARK_DRIVER_MEMORY: 2g
   SPARK_EXECUTOR_MEMORY: 2g
   SPARK_EXECUTOR_CORES: 1
@@ -90,7 +91,7 @@ Setup environment:
     - if: '$ONLY_CLEANUP == "false"'
   script:
     - |
-      for i in BATCH_JOB FRONTEND SCHEMA SPARK METADATA ZEPPELIN
+      for i in BATCH_JOB FRONTEND SCHEMA SPARK METADATA ZEPPELIN RBAC
       do
         IMAGE_TAG=${i}_IMAGE_TAG
         PROJECT_ID=${i}_PROJECT_ID
