@@ -13,12 +13,17 @@ Spark dashboard helm prepare:
     FILE_NAME: spark-dashboard-0.3.0.tgz
     PACKAGE_VERSION: "0.3.0"
     ID: ${SPARK_DASHBOARD_PROJECT_ID}
+    GRAFANA_IMAGE_TAG: 7.5.4
+    INFLUXDB_IMAGE_TAG: 1.8.4
   script:
     - !reference [".helm-prepare", "script"]
     - |
       cat << EOF > ${OVERRIDES_FILE}
       grafana:
-        image: "${CONTAINER_REGISTRY}grafana/grafana:7.5.4"
+        image: "grafana/grafana:${GRAFANA_IMAGE_TAG}"
+        imagePullPolicy: IfNotPresent
       influxdb:
-        image: "${CONTAINER_REGISTRY}influxdb:1.8.4"
+        image: "influxdb:${INFLUXDB_IMAGE_TAG}"
+        imagePullPolicy: IfNotPresent
       EOF
+      cat ${OVERRIDES_FILE}

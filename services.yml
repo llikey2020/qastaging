@@ -20,7 +20,7 @@ include:
 variables:
   CHARTS_DIR: charts
   OVERRIDES_FILE: overrides.yml
-  SERVICE_NAMESPACE: staging-48-testing
+  SERVICE_NAMESPACE: "${CI_PROJECT_NAME}-${CI_PROJECT_ID}-${ENV_NAME}"
 
 .generator:
   # extenders need to generate a file "deployment/${PROJECT}.yml"
@@ -124,10 +124,15 @@ Deploy helm charts:
     - .environment
   script:
     - |
+      ls -lRt ${CHARTS_DIR}/
       if [ -d "${CHARTS_DIR}/" ]
       then
         for SERVICE in $(ls ${CHARTS_DIR}) ; do
+          [[ ${ENABLE_ALLUXIO} -eq 0 ]] && [[ ${SERVICE} == "alluxio" ]] && continue
+
           echo "Installing/upgrading service ${SERVICE}..."
+
+          echo "helm upgrade --install --values ${CHARTS_DIR}/${SERVICE}/${OVERRIDES_FILE} ${SERVICE} ${CHARTS_DIR}/${SERVICE}/*.tgz"
           helm upgrade --install --values ${CHARTS_DIR}/${SERVICE}/${OVERRIDES_FILE} ${SERVICE} ${CHARTS_DIR}/${SERVICE}/*.tgz
         done
       else
@@ -158,7 +163,7 @@ Cleanup services:
     - helm uninstall ${BATCH_JOB_SERVICE_NAME} || true
     - helm uninstall ${SPARK_OPERATOR_SERVICE_NAME} || true
     - helm uninstall ${SPARK_DASHBOARD_SERVICE_NAME} || true
-    - kubectl delete secret ${PULL_SECRET} --ignore-not-found=true
+    - kubectl delete sa ${SPARK_OPERATOR_SERVICE_NAME} || true
     - echo "Waiting for resources to cleanup..."
     - |
       while [[ $(kubectl get pods --no-headers | wc -l) -gt 0 ]] &&
@@ -172,3 +177,4 @@ Cleanup services:
         TIMEOUT=$((TIMEOUT-1))
         sleep 1
       done
+      # kubectl delete secret ${PULL_SECRET} --ignore-not-found=true

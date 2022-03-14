@@ -31,6 +31,9 @@ variables:
     value: "false"
     description: Skip cleanup when false, only run cleanup when true
   ALLUXIO_VERSION: 2.6.0
+  ENABLE_ALLUXIO:
+    value: 0
+    description: set to 1 to support Alluxio file storage
   BATCH_JOB_IMAGE_TAG: latest
   FRONTEND_IMAGE_TAG: latest
   SCHEMA_IMAGE_TAG: latest
@@ -45,10 +48,10 @@ variables:
   SPARK_DYNAMIC_ALLOCATION_MAX_EXECUTORS: 4
   SPARK_DYNAMIC_ALLOCATION_MIN_EXECUTORS: 2
   CACHE_SSD_SIZE: 10G
-  SPARK_WAREHOUSE: spark-warehouse/
+  SPARK_WAREHOUSE: spark-warehouse
   SPARK_SQL_PERF_JAR: spark-sql-perf_2.12-0.5.1-SNAPSHOT.jar
   SPARK_DEPENDENCY_DIR: spark-files/
-  SPARK_EVENTLOG_DIR: spark-logs/
+  SPARK_EVENTLOG_DIR: spark-logs
   SPARK_DRIVER_POD_NAME: spark-driver
   SPARK_SERVICE_ACCOUNT: spark
   MYSQL_VERSION: "5.7"
@@ -71,6 +74,7 @@ Registry login:
     - if: '$ONLY_CLEANUP == "false"'
   script:
     - |
+      env
       if ! kubectl get secret ${PULL_SECRET}
       then
         kubectl create secret docker-registry ${PULL_SECRET} \
@@ -93,6 +97,8 @@ Setup environment:
         if [ ${!IMAGE_TAG} = "latest" ]
         then
           echo "${IMAGE_TAG}=$(curl --header "PRIVATE-TOKEN: ${CI_API_TOKEN}" "${CI_API_V4_URL}/projects/${!PROJECT_ID}/repository/commits/master" | jq -r '.id')" >> staging.env
+        else
+          echo "${IMAGE_TAG}=${!IMAGE_TAG}" >> staging.env
         fi
       done
   after_script:
