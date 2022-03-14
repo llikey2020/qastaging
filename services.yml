@@ -116,7 +116,7 @@ Deploy resources:
         metadata:
           name: spark
           namespace: ${SERVICE_NAMESPACE}
-        EOF
+      EOF
       fi
 
       if [ -d "${DEPLOYMENTS_DIR}/" ] 
