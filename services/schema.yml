@@ -32,5 +32,10 @@ Schema helm prepare:
         mysqlUser: root
         mysqlPassword: ${MYSQL_ROOT_PASSWORD}
         initdbScriptsConfigMap: hive-metastore-mysql-init
+      s3:
+        accessKey: ${S3A_ACCESS_KEY}
+        secretAccessKey: ${S3A_SECRET_KEY}
+        endpoint: ${S3A_ENDPOINT}
+        sslEnabled: false
       EOF
       cat ${OVERRIDES_FILE}
