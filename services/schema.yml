@@ -10,7 +10,7 @@ Schema helm prepare:
     - if: '($DEPLOY_PROJECT =~ /schema/ || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
   variables:
     SERVICE_NAME: ${SCHEMA_SERVICE_NAME}
-    PACKAGE_NAME: helm-chart
+    PACKAGE_NAME: hive-metastore-helm-chart
     FILE_NAME: hive-metastore-0.1.0.tgz
     PACKAGE_VERSION: "0.1.0"
     ID: ${SCHEMA_PROJECT_ID}
