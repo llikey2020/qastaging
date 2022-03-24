@@ -53,7 +53,6 @@ Zeppelin helm prepare:
         imagePullSecret: ${PULL_SECRET}
         submitConfOptions:
           spark.kubernetes.container.image.pullPolicy: IfNotPresent
-          spark.jars:                                  /spark/jars/spark-sequoiadb_3.0-3.2.0-SNAPSHOT.jar,/spark/jars/sequoiadb-driver-5.0.2.jar,/spark/jars/hadoop-aws-3.2.0.jar,/spark/jars/aws-java-sdk-bundle-1.11.375.jar
           spark.jars.ivy:                              /tmp/.ivy
           spark.hadoop.hive.metastore.uris:            thrift://${SCHEMA_SVC}
           spark.sql.sequoiadp.metaservice.uri:         ${METADATA_SVC}

@@ -47,7 +47,6 @@ History server helm prepare:
       cat << EOF >> ${OVERRIDES_FILE}
       eventLog:
         properties:
-          spark.jars:                                 /opt/spark/jars/hadoop-aws-3.2.0.jar,/opt/spark/jars/aws-java-sdk-bundle-1.11.375.jar
           spark.hadoop.fs.s3a.impl:                   org.apache.hadoop.fs.s3a.S3AFileSystem
           spark.hadoop.fs.s3a.connection.ssl.enabled: false
           spark.hadoop.fs.s3a.endpoint:               ${S3A_ENDPOINT}
