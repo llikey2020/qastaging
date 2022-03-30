@@ -113,6 +113,7 @@ Display Variables:
   stage: .pre
   rules:
     - if: '$ONLY_CLEANUP == "false"'
+  needs: [ "Setup environment" ]
   script:
     - |
       source staging.env
