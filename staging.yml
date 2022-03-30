@@ -109,11 +109,12 @@ Setup environment:
       dotenv: staging.env
 
 
-Display Variables:
+Display environment:
   stage: .pre
   rules:
     - if: '$ONLY_CLEANUP == "false"'
   needs: [ "Setup environment" ]
   script:
     - |
-      env
+      env | sort
+      
