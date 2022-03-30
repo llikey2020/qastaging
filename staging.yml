@@ -107,3 +107,14 @@ Setup environment:
   artifacts:
     reports:
       dotenv: staging.env
+
+
+Display environment:
+  stage: .pre
+  rules:
+    - if: '$ONLY_CLEANUP == "false"'
+  needs: [ "Setup environment" ]
+  script:
+    - |
+      env | sort
+      
