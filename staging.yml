@@ -116,5 +116,4 @@ Display Variables:
   needs: [ "Setup environment" ]
   script:
     - |
-      source staging.env
       env
