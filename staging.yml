@@ -21,6 +21,7 @@ default:
 include:
   - project: planetrover/templates
     file: templates.yml
+    ref: version_fix
   - services.yml
 
 variables:
