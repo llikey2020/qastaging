@@ -1,7 +1,7 @@
 # Include this template to deploy to an environment defined in a skeleton job like this:
 #
 # .environment:
-#   tags: ["kubernetes"]
+#   tags: ["${GIT_RUNNER_TAG}"]
 #   environment: testing
 #
 # And define the following variables in the project's Settings -> CI/CD -> Variables:
@@ -17,16 +17,13 @@
 default:
   # Use the k8s tooling image by default
   image: ${CI_REGISTRY}/planetrover/infrastructure/k8s
-  tags: ["${GIT_RUNNER_TAG}"]
 
 include:
   - project: planetrover/templates
     file: templates.yml
-    ref: version_fix
   - services.yml
 
 variables:
-  GIT_RUNNER_TAG: "k8s-cluster-1"
   DEPLOY_PROJECT:
     value: all
     description: all, alluxio, batchJob, frontend, history, hive, metadata, mysql, schema, sparkDashboard, sparkOperator, zeppelin, rbac
