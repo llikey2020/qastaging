@@ -32,7 +32,7 @@ History server helm prepare:
         mkdirIfNotExist: true
         checkLogDir:
           image:
-            repository: ${GITLAB_REGISTRY}/alluxio/alluxio
+            repository: ${CI_REGISTRY}/planetrover/infrastructure/alluxio
             tag: ${ALLUXIO_IMAGE_TAG}
             pullPolicy: IfNotPresent
       eventLog:

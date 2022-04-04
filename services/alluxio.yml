@@ -24,7 +24,7 @@ Alluxio helm prepare:
     - !reference [".helm-prepare", "script"]
     - |
       cat << EOF > ${OVERRIDES_FILE}
-        image: ${GITLAB_REGISTRY}/alluxio/alluxio
+        image: ${CI_REGISTRY}/planetrover/infrastructure/alluxio
         imageTag: ${ALLUXIO_IMAGE_TAG}
         imagePullPolicy: IfNotPresent
         properties:
