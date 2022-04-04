@@ -26,7 +26,7 @@ variables:
 .generator:
   # extenders need to generate a file "deployment/${PROJECT}.yml"
   stage: prepare
-  image: ${CONTAINER_REGISTRY}alpine
+  image: alpine
   rules:
     - if: '($DEPLOY_PROJECT == "${PROJECT}" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
   variables: {}
