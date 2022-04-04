@@ -28,6 +28,8 @@ variables:
             containers:
               - image: ${CI_REGISTRY}/planetrover/infrastructure/mysql:${MYSQL_VERSION}
                 name: ${MYSQL_SERVICE_NAME}
+                imagePullSecrets:
+                  - name: ${PULL_SECRET}
                 env:
                   - name: MYSQL_ROOT_PASSWORD
                     value: ${MYSQL_ROOT_PASSWORD}
