@@ -80,6 +80,13 @@ Zeppelin helm prepare:
           spark.sql.warehouse.dir:        "s3a://${S3A_BUCKET_NAME}/${SPARK_WAREHOUSE}"
           spark.eventLog.dir:             "s3a://${S3A_BUCKET_NAME}/${SPARK_EVENTLOG_DIR}"
           spark.history.fs.logDirectory:  "s3a://${S3A_BUCKET_NAME}/${SPARK_EVENTLOG_DIR}"
+      zeppelin:
+        notebookRepo:       org.apache.zeppelin.notebook.repo.S3NotebookRepo
+        s3:
+          endpoint:   "http://${S3A_ENDPOINT}"
+          bucketName: "${S3A_BUCKET_NAME}"
+          accessKey:  "${S3A_ACCESS_KEY}"
+          secretKey:  "${S3A_SECRET_KEY}"
       EOF
       fi
       cat ${OVERRIDES_FILE}
