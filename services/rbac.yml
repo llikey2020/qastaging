@@ -18,18 +18,13 @@ Rbac helm prepare:
     - |
       cat << EOF > ${OVERRIDES_FILE}
         replicaCount: 1
-        
         image:
           registry: ${REGISTRY}/sequoiadp/authorization-service:${RBAC_IMAGE_TAG}
           pullPolicy: Always
-        
         imagePullSecrets:
           - name: ${PULL_SECRET}
-        
         fullnameOverride: ""
-        
         instanceOwner: spark
-        
         database:
           dbURI: mysql:3306
           dbUser: root
