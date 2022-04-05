@@ -85,7 +85,7 @@ Registry login:
         --docker-username=${REGISTRY_USER} \
         --docker-password=${REGISTRY_PASSWORD}
       fi
-      
+
       if ! kubectl get secret ${PLANETROVER_PULL_SECRET}
       then
         kubectl create secret docker-registry ${PLANETROVER_PULL_SECRET} \
