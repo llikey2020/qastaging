@@ -18,6 +18,7 @@ Schema helm prepare:
     - !reference [".helm-prepare", "script"]
     - |
       cat << EOF > ${OVERRIDES_FILE}
+      replicaCount: ${REPLICA_COUNT}
       image:
         registry: ${REGISTRY}
         repository: sequoiadp/hive

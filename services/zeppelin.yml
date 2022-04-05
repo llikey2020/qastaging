@@ -19,11 +19,12 @@ Zeppelin helm prepare:
     - !reference [".helm-prepare", "script"]
     - |
       cat << EOF > ${OVERRIDES_FILE}
-      imagePullSecrets:
-        - name: ${PULL_SECRET}
+      replicaCount: ${REPLICA_COUNT}
       image:
         repository: ${REGISTRY}/sequoiadp/zeppelin:${ZEPPELIN_IMAGE_TAG}
         pullPolicy: IfNotPresent
+      imagePullSecrets:
+        - name: ${PULL_SECRET}
       backendServices:
          - name: METASTORE
            value: ${SCHEMA_SERVICE_NAME}

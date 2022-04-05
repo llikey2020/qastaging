@@ -17,6 +17,14 @@ Frontend helm prepare:
     - !reference [".helm-prepare", "script"]
     - |
       cat << EOF > ${OVERRIDES_FILE}
+      replicaCount: ${REPLICA_COUNT}
+      image:
+        registry: ${REGISTRY}
+        dockerTag: ${FRONTEND_IMAGE_TAG}
+        imagePullPolicy: Always
+      imagePullSecrets:
+        - name: ${PULL_SECRET}
+      fullnameOverride: ${FRONTEND_SERVICE_NAME}
       backendServices:
         - name: METASTORE
           value: ${SCHEMA_SERVICE_NAME}
@@ -40,13 +48,6 @@ Frontend helm prepare:
           value: ${SERVICE_NAMESPACE}
         - name: SS3_BUCKET_NAME
           value: ${S3A_BUCKET_NAME}
-      image:
-        registry: ${REGISTRY}
-        dockerTag: ${FRONTEND_IMAGE_TAG}
-        imagePullPolicy: Always
-      imagePullSecrets:
-        - name: ${PULL_SECRET}
-      fullnameOverride: ${FRONTEND_SERVICE_NAME}
       service:
         nodePort: ${SERVICE_NODE_PORT}
       EOF

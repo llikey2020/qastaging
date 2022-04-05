@@ -18,10 +18,13 @@ Spark operator helm prepare:
     - !reference [".helm-prepare", "script"]
     - |
       cat << EOF > ${OVERRIDES_FILE}
+      replicaCount: ${REPLICA_COUNT}
       sparkJobNamespace: ${SERVICE_NAMESPACE}
       image:
         repository: ${CI_REGISTRY}/planetrover/infrastructure/spark-operator
         tag: ${SPARK_OPERATOR_IMAGE_TAG}
         pullPolicy: IfNotPresent
+      imagePullSecrets:
+        - name: ${PLANETROVER_PULL_SECRET}
       EOF
       cat ${OVERRIDES_FILE}

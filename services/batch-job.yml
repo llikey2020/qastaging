@@ -19,12 +19,13 @@ Batch job helm prepare:
     - !reference [".helm-prepare", "script"]
     - |
       cat << EOF > ${OVERRIDES_FILE}
-      imagePullSecrets:
-        - name: ${PULL_SECRET}
+      replicaCount: ${REPLICA_COUNT}
       image:
         repository: ${REGISTRY}/sequoiadp/batch-job
         tag: ${BATCH_JOB_IMAGE_TAG}
         pullPolicy: IfNotPresent
+      imagePullSecrets:
+        - name: ${PULL_SECRET}
       fullnameOverride: ${BATCH_JOB_SERVICE_NAME}
       sparkJob:
         namespace: ${SERVICE_NAMESPACE}

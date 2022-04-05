@@ -17,6 +17,7 @@ History server helm prepare:
     - !reference [".helm-prepare", "script"]
     - |
       cat << EOF > ${OVERRIDES_FILE}
+      replicaCount: ${REPLICA_COUNT}
       image:
         repository: ${REGISTRY}/${SPARK_PROJECT}
         tag: ${SPARK_IMAGE_TAG}

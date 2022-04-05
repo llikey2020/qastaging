@@ -34,6 +34,7 @@ variables:
   ENABLE_ALLUXIO:
     value: 0
     description: set to 1 to support Alluxio file storage
+  REPLICA_COUNT: 1
   BATCH_JOB_IMAGE_TAG: latest
   FRONTEND_IMAGE_TAG: latest
   SCHEMA_IMAGE_TAG: latest
