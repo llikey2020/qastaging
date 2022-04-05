@@ -26,7 +26,7 @@ variables:
               app: ${MYSQL_SERVICE_NAME}
           spec:
             imagePullSecrets:
-              - name: ${PULL_SECRET}
+              - name: ${PLANETROVER_PULL_SECRET}
             containers:
               - image: ${CI_REGISTRY}/planetrover/infrastructure/mysql:${MYSQL_VERSION}
                 name: ${MYSQL_SERVICE_NAME}

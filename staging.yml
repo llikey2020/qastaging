@@ -60,6 +60,7 @@ variables:
   METASTORE_DATABASE: metastore
   DEPLOYMENTS_DIR: deployments
   PULL_SECRET: docker-login
+  PLANETROVER_PULL_SECRET: planetrover-registry
   REGISTRY: ${CI_REGISTRY}
   REGISTRY_USER: ${SEQUOIADP_DEPLOY_TOKEN_USERNAME}
   REGISTRY_PASSWORD: ${SEQUOIADP_DEPLOY_TOKEN_PASSWORD}
@@ -83,6 +84,15 @@ Registry login:
         --docker-server=${REGISTRY} \
         --docker-username=${REGISTRY_USER} \
         --docker-password=${REGISTRY_PASSWORD}
+      fi
+      
+      if ! kubectl get secret ${PLANETROVER_PULL_SECRET}
+      then
+        kubectl create secret docker-registry ${PLANETROVER_PULL_SECRET} \
+        --namespace=${KUBE_NAMESPACE} \
+        --docker-server=${REGISTRY} \
+        --docker-username=${PLANETROVER_REGISTRY_USERNAME} \
+        --docker-password=${PLANETROVER_REGISTRY_PASSWORD}
       fi
 
 Setup environment:

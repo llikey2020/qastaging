@@ -22,8 +22,12 @@ Spark dashboard helm prepare:
       grafana:
         image: "${CI_REGISTRY}/planetrover/infrastructure/grafana:${GRAFANA_IMAGE_TAG}"
         imagePullPolicy: IfNotPresent
+        imagePullSecrets:
+          - name: ${PLANETROVER_PULL_SECRET}
       influxdb:
         image: "${CI_REGISTRY}/planetrover/infrastructure/influxdb:${INFLUXDB_IMAGE_TAG}"
         imagePullPolicy: IfNotPresent
+        imagePullSecrets:
+          - name: ${PLANETROVER_PULL_SECRET}
       EOF
       cat ${OVERRIDES_FILE}

@@ -44,9 +44,11 @@ Zeppelin helm prepare:
       nginx:
         repository: ${CI_REGISTRY}/planetrover/infrastructure/nginx:${NGINX_IMAGE_TAG}
         pullPolicy: IfNotPresent
+        imagePullSecret: ${PLANETROVER_PULL_SECRET}
       dnsmasq:
         repository: ${CI_REGISTRY}/planetrover/infrastructure/go-dnsmasq:${DNSMASQ_IMAGE_TAG}
         pullPolicy: IfNotPresent
+        imagePullSecret: ${PLANETROVER_PULL_SECRET}
       spark:
         repository: ${REGISTRY}/${SPARK_PROJECT}:${SPARK_IMAGE_TAG}
         pullPolicy: IfNotPresent

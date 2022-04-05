@@ -27,6 +27,8 @@ Alluxio helm prepare:
         image: ${CI_REGISTRY}/planetrover/infrastructure/alluxio
         imageTag: ${ALLUXIO_IMAGE_TAG}
         imagePullPolicy: IfNotPresent
+        imagePullSecrets:
+          - name: ${PLANETROVER_PULL_SECRET}
         properties:
           alluxio.master.mount.table.root.ufs: ${ALLUXIO_UFS}
           alluxio.master.mount.table.root.option.aws.accessKeyId: ${AWS_S3_ACCESS_KEY_ID}
