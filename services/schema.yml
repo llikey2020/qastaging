@@ -22,7 +22,7 @@ Schema helm prepare:
         registry: ${REGISTRY}
         repository: sequoiadp/hive
         tag: ${SCHEMA_IMAGE_TAG}
-        pullSecrets: 
+        pullSecrets:
           - name: ${PULL_SECRET}
         pullPolicy: Always
       fullnameOverride: ${SCHEMA_SERVICE_NAME}
