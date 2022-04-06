@@ -26,5 +26,10 @@ Spark operator helm prepare:
         pullPolicy: IfNotPresent
       imagePullSecrets:
         - name: ${PLANETROVER_PULL_SECRET}
+      serviceAccounts:
+        spark:
+          name: ""
+        sparkoperator:
+          name: "${SERVICE_NAMESPACE}-spark-operator"
       EOF
       cat ${OVERRIDES_FILE}
