@@ -79,7 +79,7 @@ Registry login:
     - |
       env
 
-      if ! kubectl get ns -n ${SERVICE_NAMESPACE}
+      if ! kubectl get ns | grep -w ${SERVICE_NAMESPACE}
       then
         kubectl create ns ${SERVICE_NAMESPACE}
       fi
