@@ -78,6 +78,10 @@ Registry login:
   script:
     - |
       env
+
+      kubectl get ns -n ${SERVICE_NAMESPACE} >> /dev/null
+      [ $? -ne 0 ] && kubectl create ns ${SERVICE_NAMESPACE}
+
       if ! kubectl get secret ${PULL_SECRET} -n ${SERVICE_NAMESPACE}
       then
         kubectl create secret docker-registry ${PULL_SECRET} \
