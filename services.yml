@@ -117,6 +117,36 @@ Deploy resources:
       EOF
       fi
 
+      # create mysql secret
+      decoded_username=`echo "root" | base64`
+      decoded_password=`echo ${MYSQL_ROOT_PASSWORD} | base64`
+      kubectl apply -f - <<EOF
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: ${SERVICE_NAMESPACE}-mysql-secret
+        namespace: ${SERVICE_NAMESPACE}
+      type: Opaque
+      data:
+        user: "${decoded_username}"
+        password: "${decoded_password}"
+      EOF
+
+      # create s3 secrets
+      decoded_access_key=`echo ${S3A_ACCESS_KEY} | base64`
+      decoded_secret_key=`echo ${S3A_SECRET_KEY} | base64`
+      kubectl apply -f - <<EOF
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: ${service_namespace}-s3-secret
+        namespace: ${SERVICE_NAMESPACE}
+      type: Opaque
+      data:
+        accessKey: ${decoded_access_key}
+        secretKey: ${decoded_secret_key}
+      EOF
+
       if [ -d "${DEPLOYMENTS_DIR}/" ] 
       then
         echo "Deploying the following files"
