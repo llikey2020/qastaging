@@ -20,6 +20,7 @@ Spark operator helm prepare:
       cat << EOF > ${OVERRIDES_FILE}
       replicaCount: ${REPLICA_COUNT}
       sparkJobNamespace: ${SERVICE_NAMESPACE}
+      nameOverride: ${SERVICE_NAME}-${SERVICE_NAMESPACE}
       image:
         repository: ${CI_REGISTRY}/planetrover/infrastructure/spark-operator
         tag: ${SPARK_OPERATOR_IMAGE_TAG}

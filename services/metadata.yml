@@ -25,10 +25,10 @@ Metadata helm prepare:
       imagePullSecrets:
         - name: ${PULL_SECRET}
       mysql:
-        mysqlHost: ${MYSQL_SERVICE_NAME}
-        mysqlDatabase: metadatadatabase
-        mysqlUser: root
-        mysqlPassword: ${MYSQL_ROOT_PASSWORD}
+        host:   ${MYSQL_SERVICE_NAME}
+        port:   "3306"
+        secret: ${SERVICE_NAMESPACE}-mysql-secret
+        database: metadatadatabase
       EOF
       cat ${OVERRIDES_FILE}
 

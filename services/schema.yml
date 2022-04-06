@@ -35,8 +35,8 @@ Schema helm prepare:
         initdbScriptsConfigMap: hive-metastore-mysql-init
       s3:
         accessKey: ${S3A_ACCESS_KEY}
-        secretAccessKey: ${S3A_SECRET_KEY}
-        endpoint: ${S3A_ENDPOINT}
+        secretKey: ${S3A_SECRET_KEY}
+        endpoint:  ${S3A_ENDPOINT}
         sslEnabled: false
       EOF
       cat ${OVERRIDES_FILE}

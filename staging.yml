@@ -78,19 +78,25 @@ Registry login:
   script:
     - |
       env
-      if ! kubectl get secret ${PULL_SECRET}
+
+      if ! kubectl get ns | grep -w ${SERVICE_NAMESPACE}
+      then
+        kubectl create ns ${SERVICE_NAMESPACE}
+      fi
+
+      if ! kubectl get secret ${PULL_SECRET} -n ${SERVICE_NAMESPACE}
       then
         kubectl create secret docker-registry ${PULL_SECRET} \
-        --namespace=${KUBE_NAMESPACE} \
+        --namespace=${SERVICE_NAMESPACE} \
         --docker-server=${REGISTRY} \
         --docker-username=${REGISTRY_USER} \
         --docker-password=${REGISTRY_PASSWORD}
       fi
 
-      if ! kubectl get secret ${PLANETROVER_PULL_SECRET}
+      if ! kubectl get secret ${PLANETROVER_PULL_SECRET} -n ${SERVICE_NAMESPACE}
       then
         kubectl create secret docker-registry ${PLANETROVER_PULL_SECRET} \
-        --namespace=${KUBE_NAMESPACE} \
+        --namespace=${SERVICE_NAMESPACE} \
         --docker-server=${REGISTRY} \
         --docker-username=${PLANETROVER_REGISTRY_USERNAME} \
         --docker-password=${PLANETROVER_REGISTRY_PASSWORD}
