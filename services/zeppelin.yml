@@ -43,7 +43,7 @@ Zeppelin helm prepare:
         create: false
         name: ${SPARK_SERVICE_ACCOUNT}
       nginx:
-        repository: nginx:1.14.0:${NGINX_IMAGE_TAG}
+        repository: nginx:${NGINX_IMAGE_TAG}
         pullPolicy: IfNotPresent
         imagePullSecret: ${PLANETROVER_PULL_SECRET}
       dnsmasq:
