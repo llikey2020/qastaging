@@ -63,11 +63,11 @@ Batch job helm prepare:
           spark.sql.warehouse.dir:        "s3a://${S3A_BUCKET_NAME}/${SPARK_WAREHOUSE}/"
           spark.eventLog.dir:             "s3a://${S3A_BUCKET_NAME}/${SPARK_EVENTLOG_DIR}/"
           spark.history.fs.logDirectory:  "s3a://${S3A_BUCKET_NAME}/${SPARK_EVENTLOG_DIR}/"
-      s3aBucketName: ${S3A_BUCKET_NAME}
-      s3aEndpoint: ${S3A_ENDPOINT}
-      s3aAccessKey: ${S3A_ACCESS_KEY}
-      s3aSecretKey: ${S3A_SECRET_KEY}
       sparkEventLogDir: "${SPARK_EVENTLOG_DIR}"
+      s3:
+        endpoint:   ${S3A_ENDPOINT}
+        secret:     ${SERVICE_NAMESPACE}-s3-secret
+        bucketName: ${S3A_BUCKET_NAME}
       EOF
       fi
       
