@@ -139,7 +139,7 @@ Deploy resources:
       apiVersion: v1
       kind: Secret
       metadata:
-        name: ${service_namespace}-s3-secret
+        name: ${SERVICE_NAMESPACE}-s3-secret
         namespace: ${SERVICE_NAMESPACE}
       type: Opaque
       data:
