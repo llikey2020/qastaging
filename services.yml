@@ -64,18 +64,18 @@ variables:
     # PROJECT:"
   script:
     - |
-      while [ $(kubectl get pod -l ${SERVICE_LABEL} -o jsonpath="{.items[0].status.phase}") != 'Running' ]; do
+      while [ $(kubectl get pod -n ${SERVICE_NAMESPACE} -l ${SERVICE_LABEL} -o jsonpath="{.items[0].status.phase}") != 'Running' ]; do
        if [[ ${TIMEOUT} -le 0 ]]
         then
-          echo "Timed out waiting; pod status $(kubectl get pod -l ${SERVICE_LABEL} -o jsonpath="{.items[0].status.phase}") != 'Running'"
+          echo "Timed out waiting; pod status $(kubectl get pod -n ${SERVICE_NAMESPACE} -l ${SERVICE_LABEL} -o jsonpath="{.items[0].status.phase}") != 'Running'"
           exit 1
         fi
        TIMEOUT=$((TIMEOUT-1))
        sleep 1
       done
-    - kubectl describe pods -l ${SERVICE_LABEL}
+    - kubectl describe pods -n ${SERVICE_NAMESPACE} -l ${SERVICE_LABEL}
     - echo -e "\n LOGS -------- \n"
-    - kubectl logs $(kubectl get pod -l ${SERVICE_LABEL} -o jsonpath="{.items[0].metadata.name}") --all-containers=true
+    - kubectl logs $(kubectl get pod -n ${SERVICE_NAMESPACE} -l ${SERVICE_LABEL} -o jsonpath="{.items[0].metadata.name}") --all-containers=true
 
 
 .verify-cleanup:
@@ -92,8 +92,8 @@ variables:
     # SERVICE_LABEL:
     # PROJECT:"
   script:
-    - helm uninstall ${SERVICE_NAME} || true
-    - kubectl delete service/${MYSQL_SERVICE_NAME} deployment/${MYSQL_SERVICE_NAME} || true
+    - helm uninstall ${SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
+    - kubectl delete service/${MYSQL_SERVICE_NAME} deployment/${MYSQL_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
 
 Deploy resources:
   # Deploy all generated resource configs in the deployments directory
@@ -105,10 +105,10 @@ Deploy resources:
     - .environment
   script:
     - |
-      if ! kubectl get sa spark
+      if ! kubectl get sa spark -n ${SERVICE_NAMESPACE}
       then
         echo "Creating 'spark' service account"
-        kubectl apply -f - <<EOF
+        kubectl apply -n ${SERVICE_NAMESPACE} -f - <<EOF
         apiVersion: v1
         kind: ServiceAccount
         metadata:
@@ -120,7 +120,7 @@ Deploy resources:
       # create mysql secret
       decoded_username=`echo "root" | base64`
       decoded_password=`echo ${MYSQL_ROOT_PASSWORD} | base64`
-      kubectl apply -f - <<EOF
+      kubectl apply -n ${SERVICE_NAMESPACE} -f - <<EOF
       apiVersion: v1
       kind: Secret
       metadata:
@@ -135,7 +135,7 @@ Deploy resources:
       # create s3 secrets
       decoded_access_key=`echo ${S3A_ACCESS_KEY} | base64`
       decoded_secret_key=`echo ${S3A_SECRET_KEY} | base64`
-      kubectl apply -f - <<EOF
+      kubectl apply -n ${SERVICE_NAMESPACE} -f - <<EOF
       apiVersion: v1
       kind: Secret
       metadata:
@@ -151,7 +151,7 @@ Deploy resources:
       then
         echo "Deploying the following files"
         ls ${DEPLOYMENTS_DIR}/
-        kubectl apply -f ${DEPLOYMENTS_DIR}/
+        kubectl apply -n ${SERVICE_NAMESPACE} -f ${DEPLOYMENTS_DIR}/
       else
         echo "No resources to deploy"
       fi
@@ -172,9 +172,9 @@ Deploy helm charts:
           [[ ${ENABLE_ALLUXIO} -eq 0 ]] && [[ ${SERVICE} == "alluxio" ]] && continue
 
           echo "Installing/upgrading service ${SERVICE}..."
-
-          echo "helm upgrade --install --values ${CHARTS_DIR}/${SERVICE}/${OVERRIDES_FILE} ${SERVICE} ${CHARTS_DIR}/${SERVICE}/*.tgz"
-          helm upgrade --install --values ${CHARTS_DIR}/${SERVICE}/${OVERRIDES_FILE} ${SERVICE} ${CHARTS_DIR}/${SERVICE}/*.tgz
+          HELM_COMMAND="helm upgrade --install -n ${SERVICE_NAMESPACE} --values ${CHARTS_DIR}/${SERVICE}/${OVERRIDES_FILE} ${SERVICE} ${CHARTS_DIR}/${SERVICE}/*.tgz"
+          echo "${HELM_COMMAND}"
+          ${HELM_COMMAND}
         done
       else
         echo "No helm charts to deploy"
@@ -191,24 +191,24 @@ Cleanup services:
   variables:
     TIMEOUT: "60"
   script:
-    - kubectl exec ${ALLUXIO_SVC} -c alluxio-master -- alluxio fs rm -RU /${SPARK_WAREHOUSE} || true
-    - kubectl exec ${ALLUXIO_SVC} -c alluxio-master -- alluxio fs rm -RU /${SPARK_DEPENDENCY_DIR} || true
-    - helm uninstall ${ALLUXIO_SERVICE_NAME} alluxio-charts/alluxio || true
-    - kubectl delete pod ${SPARK_DRIVER_POD_NAME} --ignore-not-found=true
-    - kubectl delete service/${MYSQL_SERVICE_NAME} deployment/${MYSQL_SERVICE_NAME} || true
-    - helm uninstall ${ZEPPELIN_SERVICE_NAME} || true
-    - helm uninstall ${SCHEMA_SERVICE_NAME} || true
-    - helm uninstall ${METADATA_SERVICE_NAME} || true
-    - helm uninstall ${HISTORY_SERVICE_NAME} || true
-    - helm uninstall ${FRONTEND_SERVICE_NAME} || true
-    - helm uninstall ${BATCH_JOB_SERVICE_NAME} || true
-    - helm uninstall ${SPARK_OPERATOR_SERVICE_NAME} || true
-    - helm uninstall ${RBAC_SERVICE_NAME} || true
-    - kubectl delete sa ${SPARK_OPERATOR_SERVICE_NAME} || true
+    - kubectl exec ${ALLUXIO_SVC} -n ${SERVICE_NAMESPACE} -c alluxio-master -- alluxio fs rm -RU /${SPARK_WAREHOUSE} || true
+    - kubectl exec ${ALLUXIO_SVC} -n ${SERVICE_NAMESPACE} -c alluxio-master -- alluxio fs rm -RU /${SPARK_DEPENDENCY_DIR} || true
+    - helm uninstall -n ${SERVICE_NAMESPACE} ${ALLUXIO_SERVICE_NAME} alluxio-charts/alluxio || true
+    - kubectl delete pod ${SPARK_DRIVER_POD_NAME} -n ${SERVICE_NAMESPACE} --ignore-not-found=true
+    - kubectl delete service/${MYSQL_SERVICE_NAME} deployment/${MYSQL_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
+    - helm uninstall ${ZEPPELIN_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
+    - helm uninstall ${SCHEMA_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
+    - helm uninstall ${METADATA_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
+    - helm uninstall ${HISTORY_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
+    - helm uninstall ${FRONTEND_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
+    - helm uninstall ${BATCH_JOB_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
+    - helm uninstall ${SPARK_OPERATOR_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
+    - helm uninstall ${RBAC_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
+    - kubectl delete sa ${SPARK_OPERATOR_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
     - echo "Waiting for resources to cleanup..."
     - |
-      while [[ $(kubectl get pods --no-headers | wc -l) -gt 0 ]] &&
-            [[ $(kubectl get services --no-headers | wc -l) -gt 0 ]]
+      while [[ $(kubectl get pods -n ${SERVICE_NAMESPACE} --no-headers | wc -l) -gt 0 ]] &&
+            [[ $(kubectl get services -n ${SERVICE_NAMESPACE} --no-headers | wc -l) -gt 0 ]]
       do
         if [[ ${TIMEOUT} -le 0 ]]
         then
@@ -218,4 +218,4 @@ Cleanup services:
         TIMEOUT=$((TIMEOUT-1))
         sleep 1
       done
-      kubectl delete secret ${PULL_SECRET} --ignore-not-found=true
+      kubectl delete secret ${PULL_SECRET} -n ${SERVICE_NAMESPACE} --ignore-not-found=true
