@@ -79,8 +79,10 @@ Registry login:
     - |
       env
 
-      kubectl get ns -n ${SERVICE_NAMESPACE} >> /dev/null || true
-      [ $? -ne 0 ] && kubectl create ns ${SERVICE_NAMESPACE}
+      if ! kubectl get ns -n ${SERVICE_NAMESPACE}
+      then
+        kubectl create ns ${SERVICE_NAMESPACE}
+      fi
 
       if ! kubectl get secret ${PULL_SECRET} -n ${SERVICE_NAMESPACE}
       then
