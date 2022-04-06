@@ -191,19 +191,24 @@ Cleanup services:
   variables:
     TIMEOUT: "60"
   script:
+    - echo "kubectl exec ${ALLUXIO_SVC} -n ${SERVICE_NAMESPACE} -c alluxio-master -- alluxio fs rm -RU /${SPARK_WAREHOUSE}"
     - kubectl exec ${ALLUXIO_SVC} -n ${SERVICE_NAMESPACE} -c alluxio-master -- alluxio fs rm -RU /${SPARK_WAREHOUSE} || true
+    - echo "kubectl exec ${ALLUXIO_SVC} -n ${SERVICE_NAMESPACE} -c alluxio-master -- alluxio fs rm -RU /${SPARK_DEPENDENCY_DIR}"
     - kubectl exec ${ALLUXIO_SVC} -n ${SERVICE_NAMESPACE} -c alluxio-master -- alluxio fs rm -RU /${SPARK_DEPENDENCY_DIR} || true
+    - echo "helm uninstall -n ${SERVICE_NAMESPACE} ${ALLUXIO_SERVICE_NAME} alluxio-charts/alluxio"
     - helm uninstall -n ${SERVICE_NAMESPACE} ${ALLUXIO_SERVICE_NAME} alluxio-charts/alluxio || true
-    - kubectl delete pod ${SPARK_DRIVER_POD_NAME} -n ${SERVICE_NAMESPACE} --ignore-not-found=true
+    - echo "kubectl delete pod ${SPARK_DRIVER_POD_NAME} -n ${SERVICE_NAMESPACE} --ignore-not-found=true"
+    - kubectl delete pod ${SPARK_DRIVER_POD_NAME} -n ${SERVICE_NAMESPACE} --ignore-not-found=true || true
+    - echo "kubectl delete service/${MYSQL_SERVICE_NAME} deployment/${MYSQL_SERVICE_NAME} -n ${SERVICE_NAMESPACE}"
     - kubectl delete service/${MYSQL_SERVICE_NAME} deployment/${MYSQL_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
-    - helm uninstall ${ZEPPELIN_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
-    - helm uninstall ${SCHEMA_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
-    - helm uninstall ${METADATA_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
-    - helm uninstall ${HISTORY_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
-    - helm uninstall ${FRONTEND_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
-    - helm uninstall ${BATCH_JOB_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
-    - helm uninstall ${SPARK_OPERATOR_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
-    - helm uninstall ${RBAC_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
+    - |
+      for SERVICE in ${ZEPPELIN_SERVICE_NAME} ${SCHEMA_SERVICE_NAME} ${METADATA_SERVICE_NAME} ${HISTORY_SERVICE_NAME} \
+        ${FRONTEND_SERVICE_NAME} ${BATCH_JOB_SERVICE_NAME} ${SPARK_OPERATOR_SERVICE_NAME} ${RBAC_SERVICE_NAME}
+      do
+        echo "helm uninstall ${SERVICE} -n ${SERVICE_NAMESPACE}"
+        helm uninstall ${ZEPPELIN_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
+      done
+    - echo "kubectl delete sa ${SPARK_OPERATOR_SERVICE_NAME} -n ${SERVICE_NAMESPACE}"
     - kubectl delete sa ${SPARK_OPERATOR_SERVICE_NAME} -n ${SERVICE_NAMESPACE} || true
     - echo "Waiting for resources to cleanup..."
     - |
