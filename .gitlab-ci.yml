@@ -4,10 +4,11 @@ workflow:
     - if: '$CI_COMMIT_BRANCH'
 
 default:
-  tags: ["${GIT_RUNNER_TAG}"]
+  tags: ["${CI_RUNNER_TAG}"]
 
 variables:
-  GIT_RUNNER_TAG: "k8s-cluster-1"
+  CI_RUNNER_TAG: "k8s-cluster-1"
+  CI_ENVIRONMENT: "k8s-cluster-1"
 
 .environment:
   environment: "${CI_ENVIRONMENT}"

@@ -1,7 +1,7 @@
 # Include this template to deploy to an environment defined in a skeleton job like this:
 #
 # .environment:
-#   tags: ["${GIT_RUNNER_TAG}"]
+#   tags: ["${CI_RUNNER_TAG}"]
 #   environment: testing
 #
 # And define the following variables in the project's Settings -> CI/CD -> Variables:
