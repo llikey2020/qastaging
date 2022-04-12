@@ -217,42 +217,31 @@ Cleanup services:
         for p in `kubectl get pods -n ${SERVICE_NAMESPACE} | grep -v NAME | awk '{print $1}'`
         do
           echo "Deleting pod $p"
-          kubectl delete pod $p -n ${SERVICE_NAMESPACE}
+          kubectl delete pod $p -n ${SERVICE_NAMESPACE} || true
         done
       fi
 
-      kubectl get deployment mysql -n ${SERVICE_NAMESPACE} 2> /dev/null
-      if [[ $? -eq 0 ]]
-      then
-        echo "Deleting mysql deployment"
-        kubectl delete deployment mysql -n ${SERVICE_NAMESPACE}
+      echo "Deleting mysql deployment"
+      kubectl delete deployment mysql -n ${SERVICE_NAMESPACE} || true
 
-        echo "Deleting mysql account"
-        kubectl delete service mysql -n ${SERVICE_NAMESPACE}
-      fi
+      echo "Deleting mysql account"
+      kubectl delete service mysql -n ${SERVICE_NAMESPACE} || true
 
-      kubectl get clusterrolebinding spark-role-${SERVICE_NAMESPACE} --namespace=${SERVICE_NAMESPACE}
-      if [[ $? -eq 0 ]]
-      then
-        echo "Deleting clusterrolebinding"
-        kubectl delete clusterrolebinding spark-role-${SERVICE_NAMESPACE} --namespace=${SERVICE_NAMESPACE}
-      fi
+      echo "Deleting clusterrolebinding"
+      kubectl delete clusterrolebinding spark-role-${SERVICE_NAMESPACE} --namespace=${SERVICE_NAMESPACE} || true
 
       mysql_secret=${service_namespace}-mysql-secret
-      kubectl get secret ${mysql_secret} > /dev/null
-      if [[ $? -eq 0 ]]
-      then
-        echo "Deleting mysql secret"
-        kubectl delete secret ${mysql_secret}
-      fi
+      echo "Deleting mysql secret"
+      kubectl delete secret ${mysql_secret} || true
 
       s3_secret=${service_namespace}-s3-secret
-      kubectl get secret ${s3_secret} > /dev/null
-      if [[ $? -eq 0 ]]
-      then
-        echo "Deleting s3 secret"
-        kubectl delete secret ${s3_secret}
-      fi
+      echo "Deleting s3 secret"
+      kubectl delete secret ${s3_secret} || true
+
+      echo "Deleting image secret ${PULL_SECRET}"
+      kubectl delete secret ${PULL_SECRET} -n ${SERVICE_NAMESPACE} --ignore-not-found=true || true
+
+      echo "Deleting image secret ${PLANETROVER_PULL_SECRET}"
+      kubectl delete secret ${PLANETROVER_PULL_SECRET} -n ${SERVICE_NAMESPACE} --ignore-not-found=true || true
+
       echo "cleanup_services: done"
-      kubectl delete secret ${PULL_SECRET} -n ${SERVICE_NAMESPACE} --ignore-not-found=true
-      kubectl delete secret ${PLANETROVER_PULL_SECRET} -n ${SERVICE_NAMESPACE} --ignore-not-found=true
