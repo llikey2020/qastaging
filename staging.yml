@@ -67,17 +67,21 @@ variables:
   REGISTRY_PASSWORD: ${SEQUOIADP_DEPLOY_TOKEN_PASSWORD}
   SPARK_PROJECT: sequoiadp/spark
   SPARK_PROJECT_ID: 2
-  
+
 Registry login:
   # Login to the docker registry and create the secret used for pulling images
-  stage: .pre
-  extends:
-    - .environment
+  stage: setup
   rules:
     - if: '$ONLY_CLEANUP == "false"'
+  extends:
+    - .environment
   script:
     - |
-      env
+      env | sort
+
+      kubectl cluster-info
+
+      kubectl get ns
 
       if ! kubectl get ns | grep -w ${SERVICE_NAMESPACE}
       then
@@ -106,8 +110,13 @@ Setup environment:
   stage: .pre
   rules:
     - if: '$ONLY_CLEANUP == "false"'
+  extends:
+    - .environment
   script:
     - |
+      env | sort
+      kubectl cluster-info
+
       for i in BATCH_JOB FRONTEND SCHEMA SPARK METADATA ZEPPELIN RBAC
       do
         IMAGE_TAG=${i}_IMAGE_TAG
@@ -119,19 +128,10 @@ Setup environment:
           echo "${IMAGE_TAG}=${!IMAGE_TAG}" >> staging.env
         fi
       done
+      source staging.env
+      env | sort
   after_script:
     - cat staging.env
   artifacts:
     reports:
       dotenv: staging.env
-
-
-Display environment:
-  stage: .pre
-  rules:
-    - if: '$ONLY_CLEANUP == "false"'
-  needs: [ "Setup environment" ]
-  script:
-    - |
-      env | sort
-      
