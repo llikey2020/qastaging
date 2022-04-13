@@ -70,7 +70,7 @@ variables:
 
 Registry login:
   # Login to the docker registry and create the secret used for pulling images
-  stage: .pre
+  stage: prepare
   rules:
     - if: '$ONLY_CLEANUP == "false"'
   extends:
