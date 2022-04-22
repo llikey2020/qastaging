@@ -26,8 +26,6 @@ variables:
 .generator:
   # extenders need to generate a file "deployment/${PROJECT}.yml"
   stage: prepare
-  extends:
-    - .environment
   image: ${CI_REGISTRY}/planetrover/infrastructure/alpine:3.15
   rules:
     - if: '($DEPLOY_PROJECT == "${PROJECT}" || $DEPLOY_PROJECT == "all") && $ONLY_CLEANUP == "false"'
