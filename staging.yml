@@ -67,6 +67,7 @@ variables:
   REGISTRY_PASSWORD: ${SEQUOIADP_DEPLOY_TOKEN_PASSWORD}
   SPARK_PROJECT: sequoiadp/spark
   SPARK_PROJECT_ID: 2
+  TIME_ZONE: Canada/Eastern
 
 Registry login:
   # Login to the docker registry and create the secret used for pulling images
