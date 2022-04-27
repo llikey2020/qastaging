@@ -102,8 +102,6 @@ Deploy resources:
   stage: deploy
   rules:
     - if: '$ONLY_CLEANUP == "false"'
-  extends:
-    - .environment
   script:
     - |
       if ! kubectl get sa spark -n ${SERVICE_NAMESPACE}
@@ -162,8 +160,6 @@ Deploy helm charts:
   stage: deploy-charts
   rules:
     - if: '$ONLY_CLEANUP == "false"'
-  extends:
-    - .environment
   script:
     - |
       ls -lRt ${CHARTS_DIR}/
@@ -186,8 +182,6 @@ Cleanup services:
   stage: cleanup
   rules:
     - if: '$ONLY_CLEANUP == "true"'
-  extends:
-    - .environment
   dependencies: [] # skip downloading any artifacts
   variables:
     TIMEOUT: "60"

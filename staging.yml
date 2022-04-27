@@ -74,8 +74,6 @@ Registry login:
   stage: prepare
   rules:
     - if: '$ONLY_CLEANUP == "false"'
-  extends:
-    - .environment
   script:
     - |
       env | sort
@@ -111,8 +109,6 @@ Setup environment:
   stage: .pre
   rules:
     - if: '$ONLY_CLEANUP == "false"'
-  extends:
-    - .environment
   script:
     - |
       env | sort
